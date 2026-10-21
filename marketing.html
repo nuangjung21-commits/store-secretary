@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마케팅 도와줘 - 말하는 가게비서 상세 소개</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            950: '#0A1120',
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        },
+                        beige: {
+                            50: '#FDFBF7',
+                            100: '#FAF6EE',
+                            200: '#F3ECE0',
+                            300: '#E6DBC8',
+                        },
+                        orange: {
+                            400: '#FB923C',
+                            500: '#FF6B2B',
+                            600: '#EA580C',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes pulseWave {
+            0%, 100% { transform: scaleY(0.35); }
+            50% { transform: scaleY(1.15); }
+        }
+        .wave-bar {
+            animation: pulseWave 1.1s ease-in-out infinite;
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float-slow {
+            animation: floatSlow 3.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-beige-50 text-navy-900 font-sans antialiased selection:bg-orange-500 selection:text-white">
+
+    <!-- 상단 네비게이션 바 (딥 네이비 베이스 + 오렌지 포인트) -->
+    <header class="w-full bg-navy-900/95 backdrop-blur-md fixed top-0 z-50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-white text-xl sm:text-2xl font-extrabold flex items-center gap-2.5 tracking-tight group">
+                    <span class="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-xl">🗣️</span>
+                    <span>말하는 <span class="text-orange-400">가게비서</span></span>
+                </a>
+                <span class="hidden sm:inline-block text-white/20">|</span>
+                <span class="hidden sm:inline-block text-beige-200 text-sm font-bold bg-white/10 px-3 py-1 rounded-full">
+                    📣 마케팅 도와줘 상세 안내
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-beige-200 hover:text-white text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
+                    ← 메인 홈페이지로
+                </a>
+                <a href="index.html#contact" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-lg shadow-orange-500/25 transition-all">
+                    무료 체험 신청
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 상단 Hero 배너: 딥 네이비 베이스 + 소프트 베이지 & 오렌지 포인트 -->
+    <section class="pt-32 pb-20 md:pt-40 md:pb-24 bg-navy-900 text-white relative overflow-hidden">
+        <!-- 따뜻한 오렌지 & 베이지 배경 빛 효과 -->
+        <div class="absolute top-10 left-1/4 w-96 h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-200/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/20 border border-orange-400/30 text-orange-400 font-bold text-sm mb-6">
+                <span>📣 카테고리 상세 소개</span>
+                <span>·</span>
+                <span>마케팅 도와줘</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.2] mb-6">
+                사장님의 투박한 <span class="text-orange-400">'말 한마디'</span>가<br>
+                손님을 부르는 <span class="text-beige-100 underline decoration-orange-500 decoration-4 underline-offset-8">'전문 마케팅 콘텐츠'</span>로
+            </h1>
+
+            <p class="text-beige-200/90 text-base sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
+                차가운 IT 프로그램이 아닙니다. 바쁜 주방에서 툭 던진 한마디를 찰떡같이 알아듣고,<br class="hidden sm:block">
+                사장님의 진심을 담아 답글·전단지·블로그·인스타까지 대신 써 드리는 <strong class="text-white">따뜻한 홍보 비서</strong>입니다.
+            </p>
+
+            <!-- 빠른 이동 앵커 탭 -->
+            <div class="flex flex-wrap justify-center gap-2.5 sm:gap-3">
+                <a href="#card-review" class="px-4 py-2.5 rounded-xl bg-navy-800 hover:bg-orange-500 text-beige-100 hover:text-white border border-white/10 text-xs sm:text-sm font-bold transition-all">
+                    ⭐ 1. 고객 리뷰 답글
+                </a>
+                <a href="#card-flyer" class="px-4 py-2.5 rounded-xl bg-navy-800 hover:bg-orange-500 text-beige-100 hover:text-white border border-white/10 text-xs sm:text-sm font-bold transition-all">
+                    📄 2. 홍보 전단지 초안
+                </a>
+                <a href="#card-blog" class="px-4 py-2.5 rounded-xl bg-navy-800 hover:bg-orange-500 text-beige-100 hover:text-white border border-white/10 text-xs sm:text-sm font-bold transition-all">
+                    📸 3. 사진 활용 블로그 글
+                </a>
+                <a href="#card-insta" class="px-4 py-2.5 rounded-xl bg-navy-800 hover:bg-orange-500 text-beige-100 hover:text-white border border-white/10 text-xs sm:text-sm font-bold transition-all">
+                    📱 4. 인스타 카드뉴스 기획
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 메인 콘텐츠: 스크롤하며 보는 4가지 마케팅 자동 변환 카드 -->
+    <main class="py-16 md:py-24 max-w-6xl mx-auto px-5 sm:px-6 space-y-16 md:space-y-24">
+
+        <!-- ==========================================
+             CARD 1: 고객 리뷰 답글 자동 생성
+             ========================================== -->
+        <section id="card-review" class="scroll-mt-28">
+            <div class="bg-white rounded-[32px] shadow-xl border border-beige-300/80 overflow-hidden">
+                <!-- 카드 상단 헤더 -->
+                <div class="bg-navy-900 px-7 py-5 sm:px-10 sm:py-6 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <span class="w-10 h-10 rounded-2xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-lg shadow-md">01</span>
+                        <div>
+                            <span class="text-orange-400 text-xs font-extrabold uppercase tracking-wider">Review Auto-Reply</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-white">고객 리뷰 답글 자동 생성</h2>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-full bg-white/10 text-beige-100 text-xs font-semibold">
+                        배달앱 · 영수증 리뷰 · 단골 재방문 유도
+                    </span>
+                </div>
+
+                <!-- 좌우(모바일 상하) 대비 영역 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    
+                    <!-- 좌측: 사장님 음성 (소프트 베이지 톤) -->
+                    <div class="lg:col-span-5 bg-beige-100 p-7 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-beige-300/70 relative">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900 text-beige-100 text-xs font-bold mb-5">
+                                <span>🎙️ 사장님 음성 한마디</span>
+                            </div>
+
+                            <div class="bg-white rounded-3xl p-6 shadow-md border border-beige-300 relative">
+                                <p class="text-navy-900 font-bold text-base sm:text-lg leading-relaxed">
+                                    "별점 5점 받고 치아바타 샌드위치 맛있다고 한 리뷰에 고맙다고 답글 달아줘.<br><br>
+                                    <span class="text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">다음에 오면 아메리카노 서비스 준다고 하고.</span>"
+                                </p>
+
+                                <!-- 음성 파형 장식 -->
+                                <div class="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                                    <div class="flex items-center gap-1">
+                                        <span class="w-1 h-3 bg-orange-500 rounded-full wave-bar"></span>
+                                        <span class="w-1 h-5 bg-orange-500 rounded-full wave-bar" style="animation-delay:0.2s"></span>
+                                        <span class="w-1 h-4 bg-orange-500 rounded-full wave-bar" style="animation-delay:0.4s"></span>
+                                        <span class="w-1 h-6 bg-orange-500 rounded-full wave-bar" style="animation-delay:0.1s"></span>
+                                        <span class="ml-2 font-semibold text-navy-800">주방에서 설거지하며 5초 음성 입력</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-6 flex items-center gap-1.5">
+                            <span>💡</span> 일일이 오타 고치며 답글 달던 시간, 말 한마디로 끝납니다.
+                        </p>
+                    </div>
+
+                    <!-- 우측: AI 생성 결과 (신뢰감 있는 화이트 & 딥 네이비/오렌지 포인트) -->
+                    <div class="lg:col-span-7 p-7 sm:p-10 bg-white flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-orange-500/10 text-orange-600 text-xs font-extrabold border border-orange-500/20">
+                                    ✨ AI 전문 마케팅 변환 결과
+                                </span>
+                                <button onclick="copyText('result-1', this)" class="text-xs font-bold text-navy-700 hover:text-orange-600 bg-beige-100 hover:bg-orange-50 px-3 py-1.5 rounded-lg border border-beige-300 transition-colors">
+                                    📋 답글 복사하기
+                                </button>
+                            </div>
+
+                            <!-- 배달앱 리뷰 UI 프리뷰 -->
+                            <div class="bg-beige-50 rounded-2xl p-5 border border-beige-200 mb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-extrabold text-sm text-navy-900">김*현 고객님</span>
+                                        <span class="text-amber-400 text-sm tracking-tight">★★★★★ 5.0</span>
+                                    </div>
+                                    <span class="text-[11px] text-gray-400">치아바타 샌드위치 단품</span>
+                                </div>
+                                <p class="text-xs sm:text-sm text-gray-600">"빵이 진짜 쫄깃하고 속재료도 신선해서 너무 맛있게 먹었어요!"</p>
+                            </div>
+
+                            <!-- 사장님 AI 답글 결과 -->
+                            <div class="bg-navy-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg relative">
+                                <div class="flex items-center gap-2 mb-3 text-xs font-bold text-orange-400">
+                                    <span>↪ 사장님 정성 답글</span>
+                                    <span class="px-2 py-0.5 rounded bg-white/10 text-beige-200 text-[11px]">친절·감동 톤앤매너 적용</span>
+                                </div>
+                                <p id="result-1" class="text-base sm:text-lg font-medium leading-relaxed text-beige-50">
+                                    "고객님, 소중한 별점 5점 리뷰 감사합니다! 맛에 보람을 느낍니다. 다음 방문 시 이 리뷰를 보여주시면 <strong class="text-orange-400 underline underline-offset-4">시원한 아메리카노를 서비스로 대접</strong>하겠습니다."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             CARD 2: 홍보 전단지 초안 작성
+             ========================================== -->
+        <section id="card-flyer" class="scroll-mt-28">
+            <div class="bg-white rounded-[32px] shadow-xl border border-beige-300/80 overflow-hidden">
+                <!-- 카드 상단 헤더 -->
+                <div class="bg-navy-900 px-7 py-5 sm:px-10 sm:py-6 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <span class="w-10 h-10 rounded-2xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-lg shadow-md">02</span>
+                        <div>
+                            <span class="text-orange-400 text-xs font-extrabold uppercase tracking-wider">Promotional Flyer Copy</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-white">홍보 전단지 초안 작성</h2>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-full bg-white/10 text-beige-100 text-xs font-semibold">
+                        신메뉴 출시 · 배너/전단지 · 오프라인 집객
+                    </span>
+                </div>
+
+                <!-- 좌우 대비 영역 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    
+                    <!-- 좌측: 사장님 음성 -->
+                    <div class="lg:col-span-5 bg-beige-100 p-7 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-beige-300/70">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900 text-beige-100 text-xs font-bold mb-5">
+                                <span>🎙️ 사장님 음성 한마디</span>
+                            </div>
+
+                            <div class="bg-white rounded-3xl p-6 shadow-md border border-beige-300">
+                                <p class="text-navy-900 font-bold text-base sm:text-lg leading-relaxed">
+                                    "봄맞이 신메뉴로 <span class="text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">딸기 리코타 치즈 샐러드</span> 시작한다고 전단지 문구 좀 짜줘.<br><br>
+                                    근처 직장인 점심 10% 할인 강조하고."
+                                </p>
+
+                                <div class="mt-5 pt-4 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-500">
+                                    <span class="w-2 h-2 rounded-full bg-orange-500 animate-ping"></span>
+                                    <span class="font-semibold text-navy-800">재료 손질하면서 생각난 아이디어 즉시 말하기</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-6 flex items-center gap-1.5">
+                            <span>💡</span> 막막한 전단지·배너 카피라이팅을 메인 카피와 혜택으로 딱 정리해 줍니다.
+                        </p>
+                    </div>
+
+                    <!-- 우측: AI 생성 결과 (전단지 포스터 스타일 프리뷰) -->
+                    <div class="lg:col-span-7 p-7 sm:p-10 bg-white flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-orange-500/10 text-orange-600 text-xs font-extrabold border border-orange-500/20">
+                                    ✨ AI 전문 마케팅 변환 결과
+                                </span>
+                                <button onclick="copyText('result-2', this)" class="text-xs font-bold text-navy-700 hover:text-orange-600 bg-beige-100 hover:bg-orange-50 px-3 py-1.5 rounded-lg border border-beige-300 transition-colors">
+                                    📋 전단지 문구 복사
+                                </button>
+                            </div>
+
+                            <!-- 전단지 프리뷰 박스 -->
+                            <div id="result-2" class="bg-gradient-to-br from-beige-100 via-white to-orange-50/60 rounded-3xl p-7 sm:p-8 border-2 border-orange-400/40 shadow-md relative overflow-hidden">
+                                <div class="inline-block px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-extrabold mb-4">
+                                    🍓 SPRING NEW MENU
+                                </div>
+
+                                <!-- 메인 카피 -->
+                                <div class="mb-6">
+                                    <span class="text-xs font-extrabold text-navy-700 uppercase tracking-wider block mb-1.5">[메인 카피]</span>
+                                    <h3 class="text-2xl sm:text-3xl font-extrabold text-navy-900 leading-snug">
+                                        "나른한 봄날, 상큼함이 필요할 때!<br>
+                                        <span class="text-orange-600">딸기 리코타 치즈 샐러드</span> 출시!"
+                                    </h3>
+                                </div>
+
+                                <!-- 혜택 강조 박스 -->
+                                <div class="bg-navy-900 text-white rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                    <div>
+                                        <span class="text-xs font-extrabold text-orange-400 block mb-1">[혜택]</span>
+                                        <p class="text-base sm:text-lg font-extrabold">
+                                            인근 직장인 사원증 제시 시 <span class="text-orange-400 underline">런치 타임 10% 할인!</span>
+                                        </p>
+                                    </div>
+                                    <span class="px-3.5 py-2 rounded-xl bg-orange-500 text-white font-extrabold text-xs shrink-0">
+                                        점심 특가 10% OFF
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             CARD 3: 사진 활용 블로그 게시물 작성
+             ========================================== -->
+        <section id="card-blog" class="scroll-mt-28">
+            <div class="bg-white rounded-[32px] shadow-xl border border-beige-300/80 overflow-hidden">
+                <!-- 카드 상단 헤더 -->
+                <div class="bg-navy-900 px-7 py-5 sm:px-10 sm:py-6 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <span class="w-10 h-10 rounded-2xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-lg shadow-md">03</span>
+                        <div>
+                            <span class="text-orange-400 text-xs font-extrabold uppercase tracking-wider">Photo Blog Post</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-white">사진 활용 블로그 게시물 작성</h2>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-full bg-white/10 text-beige-100 text-xs font-semibold">
+                        동네 맛집 검색 노출 · 감성 스토리텔링
+                    </span>
+                </div>
+
+                <!-- 좌우 대비 영역 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    
+                    <!-- 좌측: 사장님 음성 + 사진 첨부 -->
+                    <div class="lg:col-span-5 bg-beige-100 p-7 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-beige-300/70">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900 text-beige-100 text-xs font-bold mb-5">
+                                <span>📸 사진 1장 첨부 + 🎙️ 음성 한마디</span>
+                            </div>
+
+                            <div class="bg-white rounded-3xl p-6 shadow-md border border-beige-300 space-y-4">
+                                <!-- 첨부 사진 썸네일 표현 -->
+                                <div class="flex items-center gap-3.5 bg-beige-50 p-3 rounded-2xl border border-beige-200">
+                                    <div class="w-14 h-14 rounded-xl bg-amber-100 flex items-center justify-center text-3xl shrink-0 shadow-inner">
+                                        🥖
+                                    </div>
+                                    <div>
+                                        <span class="text-[11px] font-extrabold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">첨부된 사진</span>
+                                        <p class="text-sm font-bold text-navy-900 mt-0.5">갓 구운 치아바타 빵 사진.jpg</p>
+                                        <p class="text-xs text-gray-400">방금 오븐에서 나온 따뜻한 빵</p>
+                                    </div>
+                                </div>
+
+                                <p class="text-navy-900 font-bold text-base sm:text-lg leading-relaxed">
+                                    "비도 오는데 <span class="text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">따뜻한 조개 수프랑 같이 먹으면 좋겠다고</span> 감성적으로 블로그 글 써줘."
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-6 flex items-center gap-1.5">
+                            <span>💡</span> 스마트폰으로 찍은 사진 한 장에 날씨·분위기만 말하면 감성 포스팅이 완성됩니다.
+                        </p>
+                    </div>
+
+                    <!-- 우측: AI 생성 결과 (블로그 에디터 프리뷰) -->
+                    <div class="lg:col-span-7 p-7 sm:p-10 bg-white flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-orange-500/10 text-orange-600 text-xs font-extrabold border border-orange-500/20">
+                                    ✨ AI 전문 마케팅 변환 결과
+                                </span>
+                                <button onclick="copyText('result-3', this)" class="text-xs font-bold text-navy-700 hover:text-orange-600 bg-beige-100 hover:bg-orange-50 px-3 py-1.5 rounded-lg border border-beige-300 transition-colors">
+                                    📋 블로그 글 복사
+                                </button>
+                            </div>
+
+                            <!-- 블로그 포스트 프리뷰 카드 -->
+                            <div id="result-3" class="bg-beige-50 rounded-3xl p-6 sm:p-8 border border-beige-300 shadow-sm">
+                                <div class="flex items-center gap-2 text-xs text-emerald-700 font-extrabold mb-2">
+                                    <span class="px-2 py-0.5 rounded bg-emerald-100">N 블로그 최적화 양식</span>
+                                    <span>· 날씨/감성 키워드 반영</span>
+                                </div>
+
+                                <!-- 블로그 제목 -->
+                                <div class="border-b border-beige-300 pb-4 mb-5">
+                                    <span class="text-xs font-bold text-orange-600 block mb-1">[제목]</span>
+                                    <h3 class="text-xl sm:text-2xl font-extrabold text-navy-900 leading-snug">
+                                        비 오는 날, 갓 구운 치아바타와 따뜻한 조개 수프 어떠세요?
+                                    </h3>
+                                </div>
+
+                                <!-- 블로그 본문 -->
+                                <div class="space-y-4">
+                                    <p class="text-navy-800 text-base sm:text-lg leading-relaxed font-medium bg-white p-5 rounded-2xl border border-beige-200">
+                                        "창밖으로 빗소리가 들리는 아침, <strong class="text-orange-600">겉바속촉 빵을 따끈한 수프에 콕 찍어</strong> 드셔보세요."
+                                    </p>
+
+                                    <div class="flex flex-wrap gap-1.5 pt-1 text-xs font-bold text-navy-700">
+                                        <span class="px-2.5 py-1 bg-white rounded-full border border-beige-300">#비오는날맛집</span>
+                                        <span class="px-2.5 py-1 bg-white rounded-full border border-beige-300">#갓구운치아바타</span>
+                                        <span class="px-2.5 py-1 bg-white rounded-full border border-beige-300">#따뜻한조개수프</span>
+                                        <span class="px-2.5 py-1 bg-white rounded-full border border-beige-300">#겉바속촉</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             CARD 4: 인스타그램 카드뉴스 기획
+             ========================================== -->
+        <section id="card-insta" class="scroll-mt-28">
+            <div class="bg-white rounded-[32px] shadow-xl border border-beige-300/80 overflow-hidden">
+                <!-- 카드 상단 헤더 -->
+                <div class="bg-navy-900 px-7 py-5 sm:px-10 sm:py-6 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <span class="w-10 h-10 rounded-2xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-lg shadow-md">04</span>
+                        <div>
+                            <span class="text-orange-400 text-xs font-extrabold uppercase tracking-wider">Instagram 3-Slide Card News</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-white">인스타그램 카드뉴스 기획</h2>
+                        </div>
+                    </div>
+                    <span class="px-3.5 py-1.5 rounded-full bg-white/10 text-beige-100 text-xs font-semibold">
+                        인스타 피드 · 스토리텔링 3장 구성 · 단체주문 유도
+                    </span>
+                </div>
+
+                <!-- 좌우 대비 영역 -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                    
+                    <!-- 좌측: 사장님 음성 -->
+                    <div class="lg:col-span-5 bg-beige-100 p-7 sm:p-10 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-beige-300/70">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900 text-beige-100 text-xs font-bold mb-5">
+                                <span>🎙️ 사장님 음성 한마디</span>
+                            </div>
+
+                            <div class="bg-white rounded-3xl p-6 shadow-md border border-beige-300">
+                                <p class="text-navy-900 font-bold text-base sm:text-lg leading-relaxed">
+                                    "우리 가게 샌드위치가 왜 특별한지 <span class="text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">3장짜리로 인스타에 올리게</span> 써줘."
+                                </p>
+
+                                <div class="mt-5 pt-4 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-500">
+                                    <span>✨</span>
+                                    <span class="font-semibold text-navy-800">주제만 말하면 슬라이드별 구성을 알아서 기획</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-6 flex items-center gap-1.5">
+                            <span>💡</span> 첫 장 시선 집중부터 마지막 장 예약 유도(CTA)까지 3단 구성으로 완성합니다.
+                        </p>
+                    </div>
+
+                    <!-- 우측: AI 생성 결과 (3장 카드뉴스 슬라이드 UI) -->
+                    <div class="lg:col-span-7 p-7 sm:p-10 bg-white flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-orange-500/10 text-orange-600 text-xs font-extrabold border border-orange-500/20">
+                                    ✨ AI 전문 마케팅 변환 결과 (3장 슬라이드 기획안)
+                                </span>
+                                <button onclick="copyText('result-4', this)" class="text-xs font-bold text-navy-700 hover:text-orange-600 bg-beige-100 hover:bg-orange-50 px-3 py-1.5 rounded-lg border border-beige-300 transition-colors">
+                                    📋 기획안 전체 복사
+                                </button>
+                            </div>
+
+                            <!-- 3장짜리 인스타그램 카드뉴스 그리드 -->
+                            <div id="result-4" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                
+                                <!-- 1장 (표지: 호기심 유발) -->
+                                <div class="bg-navy-900 text-white rounded-2xl p-5 flex flex-col justify-between aspect-square shadow-md relative overflow-hidden group hover:-translate-y-1 transition-transform">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="px-2.5 py-1 rounded-full bg-orange-500 font-extrabold">1장 · 표지</span>
+                                        <span class="text-beige-300 font-mono">1 / 3</span>
+                                    </div>
+                                    <div class="my-auto py-2">
+                                        <p class="text-orange-400 text-xs font-bold mb-1">시선 집중 Hook</p>
+                                        <h4 class="text-lg font-extrabold leading-snug">
+                                            "평범함은 가라!<br>우리 동네 샌드위치가 특별한 3가지 이유"
+                                        </h4>
+                                    </div>
+                                    <div class="text-[11px] text-beige-300/80 flex items-center justify-between border-t border-white/10 pt-2.5">
+                                        <span>밀어서 확인하기 👉</span>
+                                        <span>🥪</span>
+                                    </div>
+                                </div>
+
+                                <!-- 2장 (본문: 핵심 강점) -->
+                                <div class="bg-beige-100 text-navy-900 rounded-2xl p-5 flex flex-col justify-between aspect-square border-2 border-beige-300 shadow-md relative overflow-hidden group hover:-translate-y-1 transition-transform">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="px-2.5 py-1 rounded-full bg-navy-900 text-white font-extrabold">2장 · 비결</span>
+                                        <span class="text-navy-700 font-mono">2 / 3</span>
+                                    </div>
+                                    <div class="my-auto py-2">
+                                        <p class="text-orange-600 text-xs font-extrabold mb-1">건강함과 푸짐함</p>
+                                        <h4 class="text-lg font-extrabold leading-snug">
+                                            "매일 굽는 천연 발효종,<br>아낌없는 신선한 속재료"
+                                        </h4>
+                                    </div>
+                                    <div class="text-[11px] text-navy-700 font-semibold flex items-center justify-between border-t border-beige-300 pt-2.5">
+                                        <span>당일 생산 · 당일 판매</span>
+                                        <span>🥖🥬</span>
+                                    </div>
+                                </div>
+
+                                <!-- 3장 (마무리: 예약/행동 유도) -->
+                                <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-2xl p-5 flex flex-col justify-between aspect-square shadow-md relative overflow-hidden group hover:-translate-y-1 transition-transform">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="px-2.5 py-1 rounded-full bg-navy-900 text-white font-extrabold">3장 · 예약안내</span>
+                                        <span class="text-white/90 font-mono">3 / 3</span>
+                                    </div>
+                                    <div class="my-auto py-2">
+                                        <p class="text-beige-100 text-xs font-extrabold mb-1">주문 전환 CTA</p>
+                                        <h4 class="text-lg font-extrabold leading-snug">
+                                            "단체 주문 폭주 중!<br>최소 하루 전 예약 필수!"
+                                        </h4>
+                                    </div>
+                                    <div class="text-[11px] text-white font-bold flex items-center justify-between border-t border-white/20 pt-2.5">
+                                        <span>프로필 링크 예약 문의</span>
+                                        <span>📞✨</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 하단 행동 유도 (CTA) 섹션 -->
+    <section class="py-20 bg-navy-900 text-white text-center px-6">
+        <div class="max-w-3xl mx-auto">
+            <span class="inline-block px-4 py-1 rounded-full bg-orange-500/20 text-orange-400 font-bold text-xs mb-4">
+                전면 무료 시범 운영 중
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold mb-4 leading-tight">
+                사장님은 맛있는 요리만 하세요.<br>
+                <span class="text-orange-400">마케팅과 글쓰기는 가게비서가 대신합니다.</span>
+            </h2>
+            <p class="text-beige-200/80 text-base sm:text-lg mb-8">
+                지금 신청하시면 모든 마케팅 자동 생성 기능을 제한 없이 무료로 체험하실 수 있습니다.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="index.html#contact" class="bg-orange-500 hover:bg-orange-600 text-white text-lg font-extrabold px-9 py-4 rounded-2xl shadow-lg shadow-orange-500/30 hover:-translate-y-0.5 transition-all">
+                    1분 만에 무료 체험 신청하기 →
+                </a>
+                <a href="index.html" class="bg-white/10 hover:bg-white/15 text-white text-lg font-bold px-8 py-4 rounded-2xl border border-white/15 transition-all">
+                    메인 페이지로 돌아가기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function copyText(elementId, btn) {
+            const text = document.getElementById(elementId).innerText.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const original = btn.innerHTML;
+                btn.innerHTML = '✅ 복사 완료!';
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                }, 1800);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>말하는 가게비서 - 사장님을 위한 AI 음성비서</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#FDFBF7',
+                            cream: '#F7F3EB',
+                            dark: '#18181B',
+                            text: '#1A202C',
+                            accent: '#FF6B6B',
+                            accentHover: '#FA5252',
+                            accentLight: '#FFF0F0',
+                            warm: '#FF9F43',
+                            gray: '#4A5568'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* 커스텀 둥둥 떠다니는(Floating) 애니메이션 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-14px); }
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulseWave {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1.2); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .animate-float-slow {
+            animation: floatSlow 3.5s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: floatSlow 4s ease-in-out 1.5s infinite;
+        }
+        .wave-bar {
+            animation: pulseWave 1s ease-in-out infinite;
+        }
+        
+        /* 모바일 햄버거 메뉴 트랜지션용 */
+        #mobile-menu {
+            transition: max-height 0.35s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        #mobile-menu.open {
+            max-height: 420px;
+            opacity: 1;
+        }
+
+        /* 섹션 스크롤 오프셋 */
+        section[id], div[id] {
+            scroll-margin-top: 90px;
+        }
+
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A0AEC0;
+        }
+        body {
+            word-break: keep-all;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-text font-sans antialiased min-h-screen flex flex-col selection:bg-brand-accent selection:text-white">
+
+    <!-- 📌 상단 고정 메뉴 (GNB - Global Navigation Bar) -->
+    <header class="w-full bg-brand-bg/90 backdrop-blur-md fixed top-0 z-50 border-b border-amber-900/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#hero" class="text-xl sm:text-2xl font-extrabold flex items-center gap-2.5 tracking-tight group">
+                <span class="w-10 h-10 rounded-2xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-2xl group-hover:scale-105 transition-transform">🗣️</span>
+                <span>말하는 <span class="text-brand-accent">가게비서</span></span>
+            </a>
+
+            <!-- Desktop Menu (기획서 GNB 항목 반영) -->
+            <nav class="hidden lg:flex items-center gap-7 font-semibold text-[15px] text-brand-gray">
+                <a href="#brand-story" class="nav-link hover:text-brand-accent transition-colors py-1">브랜드 스토리</a>
+                <a href="#briefing-showcase" class="nav-link hover:text-brand-accent transition-colors py-1">오늘 꼭 챙겨야 할 정보</a>
+                <a href="#sales-showcase" class="nav-link hover:text-brand-accent transition-colors py-1">오늘의 매출 장부</a>
+                <a href="#marketing-showcase" class="nav-link hover:text-brand-accent transition-colors py-1">마케팅 도와줘</a>
+                <a href="#growth-showcase" class="nav-link hover:text-brand-accent transition-colors py-1">내 가게 성장하기</a>
+            </nav>
+
+            <!-- CTA & Mobile Toggle -->
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="hidden sm:inline-flex items-center gap-1.5 bg-brand-accent text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-brand-accentHover shadow-[0_4px_14px_rgba(255,107,107,0.35)] hover:-translate-y-0.5 transition-all">
+                    <span>무료 체험 신청</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+                
+                <!-- Mobile Menu Button -->
+                <button id="menu-btn" aria-label="메뉴 열기" class="lg:hidden p-2 rounded-xl text-brand-text hover:bg-gray-100 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="lg:hidden bg-white border-t border-gray-100">
+            <div class="px-6 py-5 flex flex-col gap-3.5 font-semibold text-brand-gray shadow-xl">
+                <a href="#brand-story" class="mobile-link py-1.5 hover:text-brand-accent flex items-center justify-between">
+                    <span>브랜드 스토리</span>
+                    <span class="text-xs text-gray-400">Brand Story</span>
+                </a>
+                <a href="#briefing-showcase" class="mobile-link py-1.5 hover:text-brand-accent flex items-center justify-between">
+                    <span>오늘 꼭 챙겨야 할 정보</span>
+                    <span class="text-xs text-gray-400">모닝 브리핑</span>
+                </a>
+                <a href="#sales-showcase" class="mobile-link py-1.5 hover:text-brand-accent flex items-center justify-between">
+                    <span>오늘의 매출 장부</span>
+                    <span class="text-xs text-gray-400">매출 자동 기록</span>
+                </a>
+                <a href="#marketing-showcase" class="mobile-link py-1.5 hover:text-brand-accent flex items-center justify-between">
+                    <span>마케팅 도와줘</span>
+                    <span class="text-xs text-gray-400">홍보 글 생성</span>
+                </a>
+                <a href="#growth-showcase" class="mobile-link py-1.5 hover:text-brand-accent flex items-center justify-between">
+                    <span>내 가게 성장하기</span>
+                    <span class="text-xs text-gray-400">경영 컨설팅</span>
+                </a>
+                <a href="#contact" class="mobile-link text-center bg-brand-accent text-white px-5 py-3.5 rounded-xl font-bold mt-2 shadow-md">
+                    무료 체험 신청하기
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 1. 첫 화면 (Hero Section) : 시선 집중 및 서비스 정의 -->
+    <section id="hero" class="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden">
+        <!-- 배경 장식 -->
+        <div class="absolute top-16 left-10 w-72 h-72 bg-orange-200/30 rounded-full blur-3xl -z-10"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-red-200/30 rounded-full blur-3xl -z-10"></div>
+
+        <div class="max-w-7xl mx-auto px-6 w-full flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-16">
+            
+            <!-- Left Column: Text Content -->
+            <div class="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 text-brand-accent font-bold text-sm md:text-base tracking-wide mb-4 px-4 py-1.5 bg-red-50 rounded-full border border-red-100 shadow-sm">
+                    <span>✨</span>
+                    <span>말하는 사장님 가게비서</span>
+                </div>
+                
+                <p class="text-gray-600 font-semibold text-base md:text-lg mb-2">
+                    "내 사업의 모든 순간이 더 쉽게, 더 스마트하게, 더 성장하게."
+                </p>
+
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] leading-[1.2] font-extrabold text-brand-text mb-6 tracking-tight">
+                    장사 끝나고 피곤한 몸으로<br>
+                    장부 쓰지 마세요.<br>
+                    <span class="text-brand-accent relative inline-block mt-1">
+                        이제 말만 하세요.
+                        <svg class="w-full h-3 text-brand-accent/30 absolute -bottom-1 left-0 -z-10" viewBox="0 0 200 12" fill="currentColor" preserveAspectRatio="none">
+                            <path d="M0,8 Q100,0 200,8 L200,12 L0,12 Z"></path>
+                        </svg>
+                    </span>
+                </h1>
+                
+                <p class="text-base sm:text-lg md:text-xl text-brand-gray mb-9 leading-relaxed max-w-2xl">
+                    오늘 판 것, 남은 재료, 단골 이야기를 스마트폰에 편하게 말하면<br class="hidden sm:block">
+                    <strong class="text-brand-text font-bold">가게비서가 알아서 장부를 정리하고 홍보 글까지 써 드립니다.</strong>
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <a href="#contact" class="bg-brand-accent hover:bg-brand-accentHover text-white text-lg font-bold px-8 py-4 rounded-2xl shadow-[0_10px_25px_rgba(255,107,107,0.35)] hover:shadow-[0_14px_30px_rgba(255,107,107,0.45)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2.5">
+                        <span>1분 만에 무료 체험 신청하기</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                    <a href="#use-case" class="bg-white hover:bg-gray-50 text-brand-text border border-gray-200 text-lg font-bold px-7 py-4 rounded-2xl shadow-sm hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                        <span>🎬 실제 작동 모습 보기</span>
+                    </a>
+                </div>
+
+                <div class="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-gray-600 font-medium">
+                    <span class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        시범 운영 기간 100% 전면 무료
+                    </span>
+                    <span class="text-gray-300">|</span>
+                    <span class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        복잡한 기기 설치 없이 스마트폰 하나로 OK
+                    </span>
+                </div>
+            </div>
+
+            <!-- Right Column: 3D Character Image + Floating Speech Cards -->
+            <div class="flex-1 w-full flex justify-center lg:justify-end relative">
+                <!-- Glow -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] bg-amber-200/40 rounded-full blur-3xl -z-10"></div>
+                
+                <div class="relative w-full max-w-[340px] sm:max-w-[440px] lg:max-w-[520px]">
+                    <img 
+                        src="Gemini_Generated_Image_85e9j985e9j985e9.png" 
+                        alt="말하는 가게비서 사장님 3D 캐릭터" 
+                        class="w-full rounded-3xl animate-float drop-shadow-2xl border border-white/60"
+                        onerror="this.src='https://placehold.co/550x550/FDFBF7/FF6B6B?text=AI+Store+Secretary'"
+                    >
+
+                    <!-- Floating Voice Bubble 1 -->
+                    <div class="hidden sm:flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl border border-gray-100 absolute -left-6 top-8 animate-float-slow">
+                        <span class="w-9 h-9 rounded-full bg-red-100 text-brand-accent flex items-center justify-center text-lg">🎙️</span>
+                        <div class="text-left">
+                            <p class="text-[11px] font-bold text-brand-accent">사장님 음성 한마디</p>
+                            <p class="text-xs font-bold text-gray-800">"샌드버거 20개 팔았고 빵 5개 남았어"</p>
+                        </div>
+                    </div>
+
+                    <!-- Floating AI Status Bubble 2 -->
+                    <div class="hidden sm:flex items-center gap-3 bg-gray-900/95 text-white backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl absolute -right-4 bottom-8 animate-float-delayed">
+                        <span class="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">✅</span>
+                        <div class="text-left">
+                            <p class="text-[11px] font-semibold text-emerald-400">가게비서 자동 처리 완료</p>
+                            <p class="text-xs font-bold">매출 장부 기록 · 내일 발주 리스트 생성</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- 2. 사장님 하루 공감 (Empathy Section) : 페인포인트 자극 -->
+    <section id="empathy" class="py-20 md:py-28 bg-brand-dark text-white relative overflow-hidden">
+        <!-- 어두운 매장 분위기 조명 효과 -->
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-14">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 text-sm font-bold mb-4 border border-amber-400/20">
+                    🌙 영업이 끝난 늦은 밤, 불 꺼진 매장
+                </span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                    "오늘도 혼자서 이 많은 걸 다 하셨나요?"
+                </h2>
+                <p class="text-gray-400 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+                    손님이 모두 빠져나간 매장, 수북이 쌓인 영수증과 노트를 펴놓고 한숨 쉬던 밤은 이제 끝내야 합니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <!-- 왼쪽: 영수증/노트 고민 비주얼 & 체크리스트 그래픽 -->
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="bg-zinc-800/80 border border-zinc-700/80 rounded-2xl p-5 sm:p-6 flex items-center gap-4 hover:border-brand-accent/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-brand-accent flex items-center justify-center text-white font-bold shrink-0">✓</div>
+                        <div>
+                            <h3 class="text-lg sm:text-xl font-bold text-white">영업 후 지친 몸으로 매출 정리하기</h3>
+                            <p class="text-sm text-gray-400 mt-0.5">현금, 카드, 배달앱 영수증을 일일이 대조하며 계산기 두드리기</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-zinc-800/80 border border-zinc-700/80 rounded-2xl p-5 sm:p-6 flex items-center gap-4 hover:border-brand-accent/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-brand-accent flex items-center justify-center text-white font-bold shrink-0">✓</div>
+                        <div>
+                            <h3 class="text-lg sm:text-xl font-bold text-white">내일 쓸 재료 확인하고 발주 넣기</h3>
+                            <p class="text-sm text-gray-400 mt-0.5">냉장고와 창고를 오가며 남은 재고 파악하고 주문 수량 계산하기</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-zinc-800/80 border border-zinc-700/80 rounded-2xl p-5 sm:p-6 flex items-center gap-4 hover:border-brand-accent/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-brand-accent flex items-center justify-center text-white font-bold shrink-0">✓</div>
+                        <div>
+                            <h3 class="text-lg sm:text-xl font-bold text-white">오늘 온 단골손님 취향 기억해 두기</h3>
+                            <p class="text-sm text-gray-400 mt-0.5">바쁜 와중에 오신 감사한 단골손님 주문 내역과 특이사항 챙기기</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-zinc-800/80 border border-zinc-700/80 rounded-2xl p-5 sm:p-6 flex items-center gap-4 hover:border-brand-accent/60 transition-all">
+                        <div class="w-8 h-8 rounded-lg bg-brand-accent flex items-center justify-center text-white font-bold shrink-0">✓</div>
+                        <div>
+                            <h3 class="text-lg sm:text-xl font-bold text-white">틈틈이 인스타, 블로그 홍보 글 쓰기</h3>
+                            <p class="text-sm text-gray-400 mt-0.5">사진 찍고 문구 고민하느라 정작 쉬는 시간조차 갖지 못하는 일상</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 어두운 매장에서 고민하는 사장님 카드 UI -->
+                <div class="lg:col-span-5">
+                    <div class="bg-gradient-to-b from-zinc-800 to-zinc-900 border border-zinc-700 rounded-3xl p-7 shadow-2xl relative">
+                        <div class="flex items-center justify-between border-b border-zinc-700 pb-4 mb-5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            </div>
+                            <span class="text-xs text-zinc-400 font-mono">PM 11:40 · 마감 후 주방</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="bg-zinc-950/70 rounded-2xl p-5 border border-zinc-800">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-3xl">🧾</span>
+                                    <div>
+                                        <p class="text-xs text-amber-400 font-semibold">쌓여가는 영수증과 수기 장부</p>
+                                        <p class="text-sm font-bold text-zinc-200">"오늘 빵이 몇 개 남았더라... 발주 넣어야 하는데..."</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-xs text-zinc-400 mt-4 pt-3 border-t border-zinc-800/80">
+                                    <div class="bg-zinc-900 p-2.5 rounded-lg">😰 마감 정산 +45분</div>
+                                    <div class="bg-zinc-900 p-2.5 rounded-lg">😰 재고 파악 +30분</div>
+                                    <div class="bg-zinc-900 p-2.5 rounded-lg">😰 홍보글 작성 +40분</div>
+                                    <div class="bg-zinc-900 p-2.5 rounded-lg">😰 체력 방전 100%</div>
+                                </div>
+                            </div>
+
+                            <div class="bg-brand-accent/15 border border-brand-accent/40 rounded-2xl p-5 text-center">
+                                <p class="text-amber-300 text-xs font-bold uppercase tracking-wider mb-1">Solution</p>
+                                <p class="text-lg sm:text-xl font-extrabold text-white leading-snug">
+                                    "매번 혼자 떠안기 벅찬 매장 관리,<br>
+                                    <span class="text-brand-accent">이제 똑똑한 비서에게 넘기세요.</span>"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 작동 방식 (How it works) : 직관적인 솔루션 제시 -->
+    <section id="how-it-works" class="py-20 md:py-28 bg-brand-cream border-b border-amber-900/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-brand-accent font-extrabold text-sm tracking-widest uppercase">How It Works</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-text mt-2 tracking-tight">
+                    이렇게 달라집니다.<br class="sm:hidden"> <span class="text-brand-accent">단 3단계로 끝나는 매장 관리</span>
+                </h2>
+                <p class="text-brand-gray mt-4 text-base sm:text-lg">
+                    키보드로 입력할 필요 없습니다. 앞치마 주머니 속 스마트폰에 평소처럼 말씀만 하세요.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- 데스크톱 연결 화살표 점선 -->
+                <div class="hidden md:block absolute top-1/2 left-[18%] right-[18%] h-0.5 border-t-2 border-dashed border-brand-accent/30 -z-0"></div>
+
+                <!-- Step 1 -->
+                <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 relative z-10 flex flex-col justify-between hover:-translate-y-1.5 transition-transform">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="px-3.5 py-1 rounded-full bg-red-50 text-brand-accent font-extrabold text-sm">STEP 01</span>
+                            <span class="text-4xl">🗣️</span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-brand-text mb-3">① 말한다</h3>
+                        <p class="text-brand-gray text-sm mb-6">요리 중이거나 마감 정리하며 스마트폰을 향해 편하게 이야기합니다.</p>
+                    </div>
+                    <div class="bg-brand-bg rounded-2xl p-4 border border-amber-900/10">
+                        <p class="text-xs text-brand-accent font-bold mb-1">사장님 음성 입력</p>
+                        <p class="text-brand-text font-bold text-base leading-snug">
+                            "오늘 샌드버거 20개 팔았고,<br>치아바타 빵 5개 남았어."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 relative z-10 flex flex-col justify-between hover:-translate-y-1.5 transition-transform">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="px-3.5 py-1 rounded-full bg-amber-50 text-amber-600 font-extrabold text-sm">STEP 02</span>
+                            <span class="text-4xl">⚙️</span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-brand-text mb-3">② 정리된다</h3>
+                        <p class="text-brand-gray text-sm mb-6">AI가 음성을 인식해 매출 장부와 재고 리스트에 텍스트로 즉시 업데이트합니다.</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200 space-y-2 text-xs">
+                        <div class="flex justify-between items-center bg-white px-3 py-2 rounded-lg shadow-sm">
+                            <span class="font-bold text-gray-700">📈 매출 장부</span>
+                            <span class="text-emerald-600 font-extrabold">샌드버거 +20개 기록 완료</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-white px-3 py-2 rounded-lg shadow-sm">
+                            <span class="font-bold text-gray-700">📦 현재 재고</span>
+                            <span class="text-amber-600 font-extrabold">치아바타 빵 잔여 5개</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-brand-accent/30 relative z-10 flex flex-col justify-between hover:-translate-y-1.5 transition-transform">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-600 font-extrabold text-sm">STEP 03</span>
+                            <span class="text-4xl">🔔</span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-brand-text mb-3">③ 알려준다</h3>
+                        <p class="text-brand-gray text-sm mb-6">기록 완료 알림과 함께 사장님이 다음으로 챙겨야 할 일을 먼저 제안합니다.</p>
+                    </div>
+                    <div class="bg-brand-accentLight rounded-2xl p-4 border border-brand-accent/20">
+                        <p class="text-xs text-brand-accent font-bold mb-1">가게비서 스마트 알림</p>
+                        <p class="text-brand-text font-bold text-sm leading-snug">
+                            "매출이 기록되었습니다! 내일 재료 발주 리스트를 확인해 보시겠어요?"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 핵심 기능 5가지 (Features) : 실질적 가치 전달 -->
+    <section id="features" class="py-20 md:py-28 bg-brand-bg">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-brand-accent font-extrabold text-sm tracking-widest uppercase">Core Features</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-text mt-2 tracking-tight">
+                    "사장님은 요리와 손님에게만 집중하세요."
+                </h2>
+                <p class="text-brand-gray mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+                    장부 기록부터 재료 발주, 단골 관리, SNS 마케팅, 수익 분석까지 5가지 핵심 기능을 말 한마디로 해결합니다.
+                </p>
+            </div>
+
+            <!-- 5개 카드 그리드 (상단 3개 + 하단 2개 와이드 배치) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-7">
+                
+                <!-- 기능 1: 오늘의 매출 장부 -->
+                <div id="feature-sales" class="lg:col-span-2 bg-white rounded-3xl p-7 shadow-md hover:shadow-xl border border-gray-100 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-red-50 text-brand-accent flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                                📒
+                            </div>
+                            <a href="#sales-showcase" class="px-3 py-1.5 rounded-full bg-[#0F172A] text-[#FBBF24] hover:bg-[#FF8A00] hover:text-white font-bold text-xs transition-colors">
+                                상세 보기 ↓
+                            </a>
+                        </div>
+                        <span class="text-xs font-extrabold text-brand-accent uppercase tracking-wider">매출 기록 · 발주 연동</span>
+                        <h3 class="text-2xl font-extrabold text-brand-text mt-1 mb-3">1. 오늘의 매출 장부</h3>
+                        <p class="text-brand-gray leading-relaxed text-sm sm:text-base mb-6">
+                            말 한마디로 오늘의 현금/카드 매출 정산부터 내일 필요한 식자재 발주 리스트까지 3분 만에 끝냅니다.
+                        </p>
+                    </div>
+                    <div class="bg-[#FAF6EE] rounded-2xl p-4 border border-[#E5DCCB] text-xs space-y-2">
+                        <div class="flex justify-between text-gray-600 font-semibold">
+                            <span>오늘 총 매출</span>
+                            <a href="sales.html" class="text-[#EA580C] font-extrabold hover:underline">새 창으로 보기 →</a>
+                        </div>
+                        <div class="text-lg font-extrabold text-[#0F172A]">400,000원 <span class="text-xs text-emerald-600 font-bold">🎉 어제보다 +15%</span></div>
+                        <div class="flex gap-2 pt-1">
+                            <span class="px-2.5 py-1 bg-white rounded-md border border-[#E5DCCB] text-gray-700 font-semibold">카드 35만 원</span>
+                            <span class="px-2.5 py-1 bg-white rounded-md border border-[#E5DCCB] text-gray-700 font-semibold">현금 5만 원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 기능 2: 오늘 꼭 챙겨야 할 정보 -->
+                <div id="feature-inventory" class="lg:col-span-2 bg-white rounded-3xl p-7 shadow-md hover:shadow-xl border border-gray-100 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                                ☀️
+                            </div>
+                            <a href="#briefing-showcase" class="px-3 py-1.5 rounded-full bg-[#0F172A] text-[#FB923C] hover:bg-[#FF6B2B] hover:text-white font-bold text-xs transition-colors">
+                                모닝 브리핑 ↓
+                            </a>
+                        </div>
+                        <span class="text-xs font-extrabold text-amber-600 uppercase tracking-wider">출근길 1분 브리핑</span>
+                        <h3 class="text-2xl font-extrabold text-brand-text mt-1 mb-3">2. 오늘 꼭 챙겨야 할 정보</h3>
+                        <p class="text-brand-gray leading-relaxed text-sm sm:text-base mb-6">
+                            단골 예약 리마인더, 식자재 유통기한 임박 알림, 그리고 돈이 되는 업종 트렌드까지 아침마다 브리핑해 드립니다.
+                        </p>
+                    </div>
+                    <div class="bg-[#FAF6EE] rounded-2xl p-4 border border-[#E5DCCB] text-xs space-y-2">
+                        <div class="font-bold text-[#0F172A] flex items-center justify-between">
+                            <span>☀️ 스마트 모닝 브리핑 3종</span>
+                            <a href="briefing.html" class="text-[#EA580C] font-extrabold hover:underline">새 창으로 보기 →</a>
+                        </div>
+                        <div class="flex justify-between bg-white px-3 py-2 rounded-lg border border-[#E5DCCB]/60">
+                            <span class="font-medium text-gray-700">⏰ 오후 1시 김 사장님 픽업</span>
+                            <span class="font-extrabold text-blue-600">12:30 알람</span>
+                        </div>
+                        <div class="flex justify-between bg-white px-3 py-2 rounded-lg border border-[#E5DCCB]/60">
+                            <span class="font-medium text-gray-700">💡 비건/건강식 검색량</span>
+                            <span class="font-extrabold text-[#EA580C]">▲ +30% 증가</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 기능 3: 단골 기억 -->
+                <div id="feature-crm" class="lg:col-span-2 bg-white rounded-3xl p-7 shadow-md hover:shadow-xl border border-gray-100 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
+                            💝
+                        </div>
+                        <span class="text-xs font-extrabold text-blue-600 uppercase tracking-wider">고객 관리</span>
+                        <h3 class="text-2xl font-extrabold text-brand-text mt-1 mb-3">3. 단골 기억</h3>
+                        <p class="text-brand-gray leading-relaxed text-sm sm:text-base mb-6">
+                            "오늘 박 사장님 오셔서 주먹밥 3개 사가셨어"라고 말하면 고객 노트에 자동 메모됩니다.
+                        </p>
+                    </div>
+                    <div class="bg-blue-50/50 rounded-2xl p-4 border border-blue-100 text-xs space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-blue-600 text-white rounded font-bold text-[11px]">단골 노트</span>
+                            <span class="font-bold text-gray-800">박 사장님 (이번 달 6회 방문)</span>
+                        </div>
+                        <p class="bg-white p-2.5 rounded-lg text-gray-700 font-medium">
+                            📝 "주먹밥 3개 포장 · 매운 소스 별도 포장 선호하심"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 기능 4: 마케팅 도와줘 -->
+                <div id="feature-marketing" class="lg:col-span-3 bg-white rounded-3xl p-7 sm:p-8 shadow-md hover:shadow-xl border border-gray-100 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                                📣
+                            </div>
+                            <a href="#marketing-showcase" class="px-3.5 py-1.5 rounded-full bg-[#0F172A] text-[#FB923C] hover:bg-orange-500 hover:text-white font-bold text-xs transition-colors">
+                                4가지 자동생성 예시 보기 ↓
+                            </a>
+                        </div>
+                        <span class="text-xs font-extrabold text-orange-600 uppercase tracking-wider">홍보 자동 생성</span>
+                        <h3 class="text-2xl font-extrabold text-brand-text mt-1 mb-3">4. 마케팅 도와줘</h3>
+                        <p class="text-brand-gray leading-relaxed text-sm sm:text-base mb-6">
+                            고객 리뷰 답글, 신메뉴 전단지 초안, 사진 활용 감성 블로그, 인스타그램 3장 카드뉴스까지 사장님의 말 한마디로 완성합니다.
+                        </p>
+                    </div>
+                    <div class="bg-[#FAF6EE] rounded-2xl p-4 border border-[#E6DBC8] text-xs">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <p class="font-bold text-[#0F172A]">✨ 사장님의 말 한마디 → 전문 마케팅 콘텐츠</p>
+                            <a href="marketing.html" class="text-orange-600 font-extrabold hover:underline">새 창으로 크게 보기 →</a>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed bg-white p-3 rounded-xl border border-[#E6DBC8]/80">
+                            "오늘도 갓 구운 치아바타로 만든 <strong class="text-orange-600">샌드버거밥</strong>이 빠르게 품절되고 있어요! 🥪 저녁 타임 주먹밥도 넉넉히 준비해 두었으니 편하게 들러주세요 😊"
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 기능 5: 내 가게 성장하기 -->
+                <div id="feature-growth" class="lg:col-span-3 bg-white rounded-3xl p-7 sm:p-8 shadow-md hover:shadow-xl border border-gray-100 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                                📊
+                            </div>
+                            <a href="#growth-showcase" class="px-3.5 py-1.5 rounded-full bg-[#0F172A] text-emerald-400 hover:bg-emerald-500 hover:text-white font-bold text-xs transition-colors">
+                                4대 컨설팅 리포트 보기 ↓
+                            </a>
+                        </div>
+                        <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">프랜차이즈 본사급 밀착 컨설팅</span>
+                        <h3 class="text-2xl font-extrabold text-brand-text mt-1 mb-3">5. 내 가게 성장시키기</h3>
+                        <p class="text-brand-gray leading-relaxed text-sm sm:text-base mb-6">
+                            30일 성장 로드맵, 경쟁업체 차별화 전략, 메뉴 수익성 진단, 단골 재방문 문자 발송까지 데이터 기반 경영 컨설팅을 제공합니다.
+                        </p>
+                    </div>
+                    <div class="bg-[#FAF6EE] rounded-2xl p-4 border border-[#E5DCCB] text-xs">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-[#0F172A]">🏆 효자 메뉴 B.L.T 샌드위치 마진 68%</span>
+                            <a href="growth.html" class="text-emerald-600 font-extrabold hover:underline">새 창으로 크게 보기 →</a>
+                        </div>
+                        <!-- 막대 그래프 UI -->
+                        <div class="grid grid-cols-4 gap-2 items-end h-20 pt-2 px-2 bg-white rounded-xl border border-[#E5DCCB]/80">
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-full bg-gray-200 rounded-t h-8"></div>
+                                <span class="text-[10px] text-gray-500">1주차</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-full bg-emerald-200 rounded-t h-10"></div>
+                                <span class="text-[10px] text-gray-500">2주차</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-full bg-emerald-500 rounded-t h-14"></div>
+                                <span class="text-[10px] font-bold text-emerald-600">3주차 미션</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="w-full bg-blue-600 rounded-t h-16"></div>
+                                <span class="text-[10px] font-bold text-blue-600">목표 +20%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4-0. 상세페이지 핵심 구성: '오늘 꼭 챙겨야 할 정보' 섹션 (스마트 모닝 브리핑 대시보드) -->
+    <section id="briefing-showcase" class="py-20 md:py-28 bg-[#FAF6EE] text-[#0F172A] border-t border-[#E5DCCB] relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6 relative z-10">
+            <!-- 섹션 헤더 -->
+            <div class="text-center mb-14">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0F172A] text-[#FB923C] font-extrabold text-xs sm:text-sm mb-4 shadow-sm">
+                    <span>☀️ '오늘 꼭 챙겨야 할 정보' 스마트 모닝 브리핑</span>
+                    <span>·</span>
+                    <a href="briefing.html" class="underline hover:text-white">전용 상세페이지 열기 ↗</a>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-snug break-keep">
+                    "출근길 1분 브리핑, <span class="text-[#FF6B2B] underline decoration-[#FF6B2B]/40 decoration-4 underline-offset-8">오늘 장사와 내일의 트렌드</span>를<br>
+                    알려드립니다."
+                </h2>
+                <p class="text-[#334155] mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                    아침 출근길 스마트폰 화면 하나로 단골 픽업 일정부터 유통기한 임박 재고, 요즘 뜨는 신메뉴 트렌드까지 한눈에 챙기세요.
+                </p>
+            </div>
+
+            <!-- 대시보드 위젯 3가지 카드 그리드 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch">
+                
+                <!-- 1. 단골 예약 리마인더 (달력/시계 아이콘) -->
+                <div class="lg:col-span-6 bg-white rounded-[30px] p-7 sm:p-8 shadow-xl border border-[#E5DCCB] flex flex-col justify-between hover:-translate-y-1 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-13 h-13 w-12 h-12 rounded-2xl bg-[#0F172A] text-[#FB923C] flex items-center justify-center shadow">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Widget 01 · 예약/픽업</span>
+                                    <h3 class="text-xl font-extrabold text-[#0F172A]">단골 예약 리마인더</h3>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-extrabold text-xs border border-blue-200">
+                                ⏰ 12:30 알람 설정됨
+                            </span>
+                        </div>
+
+                        <div class="bg-[#FAF6EE] rounded-2xl p-5 border border-[#E5DCCB] mb-5">
+                            <p class="text-base sm:text-lg font-extrabold text-[#0F172A] leading-relaxed">
+                                "오후 1시 <span class="text-[#EA580C] underline decoration-[#FF6B2B] decoration-2 underline-offset-4">단골 김 사장님 치아바타 10개 픽업 예정</span> (12:30 준비 알람 설정됨)"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-600 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200/70">
+                        <span>🔔 12:30 포장 준비 알림</span>
+                        <span class="text-[#FF6B2B]">→</span>
+                        <span class="text-[#0F172A]">🥖 13:00 치아바타 10개 픽업</span>
+                    </div>
+                </div>
+
+                <!-- 2. 식자재 유통기한 알림 (경고/재고 아이콘) -->
+                <div class="lg:col-span-6 bg-white rounded-[30px] p-7 sm:p-8 shadow-xl border border-[#E5DCCB] flex flex-col justify-between hover:-translate-y-1 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-2xl bg-orange-50 text-[#EA580C] border border-orange-200 flex items-center justify-center shadow-sm">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold text-[#EA580C] uppercase tracking-wider">Widget 02 · 재고/유통기한</span>
+                                    <h3 class="text-xl font-extrabold text-[#0F172A]">식자재 유통기한 알림</h3>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-red-50 text-red-600 font-extrabold text-xs border border-red-200">
+                                ⚠️ D-1 만료 임박
+                            </span>
+                        </div>
+
+                        <div class="bg-orange-50/60 rounded-2xl p-5 border border-orange-200 mb-5">
+                            <p class="text-base sm:text-lg font-extrabold text-[#0F172A] leading-relaxed">
+                                "⚠️ <span class="text-red-600">내일 만료: 리코타 치즈 2통.</span> 오늘 <span class="text-[#EA580C] bg-white px-1.5 py-0.5 rounded border border-orange-200">'한정 메뉴'로 우선 소진</span>을 추천합니다."
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-600 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200/70">
+                        <span>🧀 리코타 치즈 2통 우선 활용</span>
+                        <span class="text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">식자재 폐기 손실 방어</span>
+                    </div>
+                </div>
+
+                <!-- 3. 업종 트렌드 & 인사이트 (전구/트렌드 차트 아이콘) - ★가장 강조할 위젯 -->
+                <div class="lg:col-span-12 bg-[#0F172A] text-white rounded-[34px] p-8 sm:p-10 shadow-[0_14px_40px_rgba(255,107,43,0.3)] border-2 border-[#FF6B2B] relative overflow-hidden">
+                    <div class="absolute -top-20 -right-20 w-80 h-80 bg-[#FF6B2B]/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#FF6B2B] text-white font-extrabold text-xs sm:text-sm mb-6 shadow">
+                        <span>★ AI TREND INSIGHT</span>
+                        <span>·</span>
+                        <span>오늘 가장 주목해야 할 신메뉴 기회</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+                        <div class="lg:col-span-7 space-y-4">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#FB923C] to-[#EA580C] text-white flex items-center justify-center text-3xl shadow-lg shrink-0">
+                                    💡
+                                </div>
+                                <div>
+                                    <span class="text-[#FB923C] text-xs font-extrabold uppercase tracking-wider">Widget 03 · 업종 트렌드 & 인사이트</span>
+                                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white">업종 트렌드 & 인사이트</h3>
+                                </div>
+                            </div>
+
+                            <div class="bg-[#1E293B] rounded-2xl p-6 border border-[#FB923C]/40">
+                                <p class="text-lg sm:text-2xl font-extrabold text-[#FAF6EE] leading-snug">
+                                    "💡 최근 2030 직장인 <span class="text-[#FB923C] underline decoration-[#FF6B2B] decoration-4 underline-offset-4">'비건/건강식' 검색량 30% 증가.</span> 당근 라페를 활용한 신메뉴를 기획해 볼까요?"
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 트렌드 상승 미니 차트 카드 -->
+                        <div class="lg:col-span-5 bg-[#1E293B]/90 rounded-2xl p-5 border border-white/10">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-bold text-[#E5DCCB]">📈 2030 직장인 '비건/건강식' 검색 추이</span>
+                                <span class="px-2.5 py-1 rounded-full bg-[#FF6B2B] text-white font-extrabold text-xs">▲ +30% 증가</span>
+                            </div>
+                            <div class="grid grid-cols-4 gap-2.5 items-end h-24 pt-4 px-2 bg-[#0F172A] rounded-xl border border-white/5">
+                                <div class="flex flex-col items-center gap-1">
+                                    <div class="w-full bg-slate-700 rounded-t h-7"></div>
+                                    <span class="text-[10px] text-slate-400">3주전</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-1">
+                                    <div class="w-full bg-slate-600 rounded-t h-10"></div>
+                                    <span class="text-[10px] text-slate-400">2주전</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-1">
+                                    <div class="w-full bg-[#FB923C]/70 rounded-t h-13 h-12"></div>
+                                    <span class="text-[10px] text-slate-300">지난주</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-1">
+                                    <div class="w-full bg-gradient-to-t from-[#EA580C] to-[#FB923C] rounded-t h-16"></div>
+                                    <span class="text-[10px] font-extrabold text-[#FB923C]">이번주</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4-1. 상세페이지 핵심 구성: '오늘의 매출장부' 섹션 (소프트 베이지 배경 + 딥 네이비 메인 + 오렌지 옐로우 포인트) -->
+    <section id="sales-showcase" class="py-20 md:py-28 bg-[#FAF6EE] text-[#0F172A] border-t border-[#E5DCCB] relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6 relative z-10">
+            <!-- 섹션 헤더 -->
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0F172A] text-[#FBBF24] font-extrabold text-xs sm:text-sm mb-4 shadow-sm">
+                    <span>📒 '오늘의 매출장부' 상세 가이드</span>
+                    <span>·</span>
+                    <a href="sales.html" class="underline hover:text-white">전용 상세페이지 열기 ↗</a>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
+                    "장사 끝! 마감부터 내일 장사 준비까지<br>
+                    <span class="text-[#FF8A00] underline decoration-[#FF8A00]/40 decoration-4 underline-offset-8">말 한마디면 3분 만에</span> 끝납니다."
+                </h2>
+                <p class="text-[#334155] mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                    퇴근 전 피곤한 상태에서 편하게 툭 던진 한마디가<br class="hidden sm:block">
+                    깔끔한 마감 정산 대시보드와 내일 발주 체크리스트로 즉시 정리됩니다.
+                </p>
+            </div>
+
+            <div class="space-y-12 md:space-y-16">
+                
+                <!-- 1. 오늘 매출 분석 기능 (좌측 사장님 말풍선 vs 우측 AI 대시보드 카드) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch">
+                    <!-- 좌측: 사장님 음성 (친근한 대화창) -->
+                    <div class="lg:col-span-5 bg-[#F3ECE0] rounded-[30px] p-7 sm:p-8 border border-[#E5DCCB] flex flex-col justify-between shadow-md">
+                        <div>
+                            <div class="flex items-center justify-between mb-5 pb-3.5 border-b border-[#E5DCCB]">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-10 h-10 rounded-2xl bg-[#0F172A] text-[#FBBF24] flex items-center justify-center text-lg font-bold">👨‍🍳</span>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-[#EA580C] block">01. 오늘 매출 분석 기능</span>
+                                        <h3 class="text-base font-extrabold text-[#0F172A]">사장님 음성 (말풍선)</h3>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-white text-[#0F172A] font-bold text-xs border border-[#E5DCCB]">🎙️ 일상 대화</span>
+                            </div>
+
+                            <div class="bg-white rounded-3xl rounded-tl-md p-6 shadow-md border border-[#E5DCCB]">
+                                <p class="text-[#0F172A] font-bold text-base sm:text-lg leading-relaxed">
+                                    "오늘 <span class="text-[#EA580C] bg-amber-50 px-1.5 py-0.5 rounded">치아바타 샌드위치 30개</span> 팔았고, 점심때 <span class="text-[#EA580C] bg-amber-50 px-1.5 py-0.5 rounded">감자수프 세트</span>가 많이 나갔어.<br><br>
+                                    <span class="underline decoration-[#FF8A00] decoration-2 underline-offset-4">현금 5만 원에 카드 35만 원</span>이야."
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-[#334155] font-semibold mt-5 flex items-center gap-1.5">
+                            <span>💬</span> 계산기 두드릴 필요 없이 퇴근 전 생각나는 대로 편하게 말씀하세요.
+                        </p>
+                    </div>
+
+                    <!-- 우측: AI 생성 결과 (대시보드 카드) -->
+                    <div class="lg:col-span-7 bg-[#0F172A] text-white rounded-[30px] p-7 sm:p-8 shadow-2xl border border-[#1E293B] flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-5 pb-3.5 border-b border-white/10">
+                                <span class="inline-flex items-center gap-2 text-xs font-extrabold text-[#FBBF24] uppercase tracking-wider">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-[#FF8A00] animate-pulse"></span>
+                                    AI 생성 결과 · 마감 정산 대시보드
+                                </span>
+                                <span class="text-xs text-slate-400 font-mono">실시간 리포트 위젯</span>
+                            </div>
+
+                            <!-- [오늘의 마감 리포트] -->
+                            <div class="bg-[#1E293B] rounded-2xl p-5 sm:p-6 border border-white/10 mb-4">
+                                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                    <div>
+                                        <span class="text-xs font-extrabold text-[#FBBF24] block mb-1">[오늘의 마감 리포트]</span>
+                                        <h4 class="text-xl sm:text-2xl font-extrabold text-white">
+                                            "오늘 총매출은 <span class="text-[#FBBF24]">40만 원</span>입니다. 🎉 <span class="text-emerald-400 text-base sm:text-lg">(어제보다 15% 상승)</span>"
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <!-- 차트/그래프 느낌의 UI -->
+                                <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 pt-4 border-t border-white/10 items-center">
+                                    <div class="sm:col-span-7 space-y-2.5 text-xs">
+                                        <div class="flex justify-between font-bold">
+                                            <span class="text-slate-300">💳 카드 매출 (87.5%)</span>
+                                            <span class="text-white font-extrabold">350,000원</span>
+                                        </div>
+                                        <div class="w-full h-2.5 bg-[#0F172A] rounded-full overflow-hidden flex">
+                                            <div class="bg-[#FF8A00] h-full" style="width: 87.5%"></div>
+                                            <div class="bg-[#FBBF24]/50 h-full" style="width: 12.5%"></div>
+                                        </div>
+                                        <div class="flex justify-between font-bold">
+                                            <span class="text-slate-400">💵 현금 매출 (12.5%)</span>
+                                            <span class="text-slate-200 font-extrabold">50,000원</span>
+                                        </div>
+                                    </div>
+                                    <div class="sm:col-span-5 bg-[#0F172A] rounded-xl p-3 border border-white/5">
+                                        <div class="flex justify-between text-[10px] text-slate-400 mb-1.5">
+                                            <span>시간대별 매출 추이</span>
+                                            <span class="text-[#FBBF24] font-bold">12~1시 60%</span>
+                                        </div>
+                                        <div class="grid grid-cols-4 gap-1.5 items-end h-14 px-1">
+                                            <div class="bg-slate-700 rounded-t h-5"></div>
+                                            <div class="bg-[#FF8A00] rounded-t h-12"></div>
+                                            <div class="bg-slate-600 rounded-t h-7"></div>
+                                            <div class="bg-slate-500 rounded-t h-8"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- [AI 판매 인사이트] -->
+                            <div class="bg-[#FF8A00]/15 border border-[#FBBF24]/40 rounded-2xl p-5">
+                                <span class="inline-block px-2.5 py-0.5 rounded bg-[#FF8A00] text-white text-xs font-extrabold mb-2">[AI 판매 인사이트]</span>
+                                <p class="text-sm sm:text-base text-[#FAF6EE] font-semibold leading-relaxed">
+                                    "오늘 <strong class="text-[#FBBF24]">점심시간(12시~1시)에 세트 주문이 전체의 60%</strong>를 차지했습니다. 내일 매장 앞 입간판에 <strong class="underline decoration-[#FBBF24] underline-offset-4">세트 메뉴를 강조</strong>해 보는 건 어떨까요?"
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 내일 발주 리스트 자동 작성 기능 (좌측 사장님 말풍선 vs 우측 체크리스트 카드) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-stretch">
+                    <!-- 좌측: 사장님 음성 (말풍선) -->
+                    <div class="lg:col-span-5 bg-[#F3ECE0] rounded-[30px] p-7 sm:p-8 border border-[#E5DCCB] flex flex-col justify-between shadow-md">
+                        <div>
+                            <div class="flex items-center justify-between mb-5 pb-3.5 border-b border-[#E5DCCB]">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-10 h-10 rounded-2xl bg-[#0F172A] text-[#FBBF24] flex items-center justify-center text-lg font-bold">👨‍🍳</span>
+                                    <div>
+                                        <span class="text-xs font-extrabold text-[#EA580C] block">02. 내일 발주 리스트 자동 작성</span>
+                                        <h3 class="text-base font-extrabold text-[#0F172A]">사장님 음성 (말풍선)</h3>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-white text-[#0F172A] font-bold text-xs border border-[#E5DCCB]">🎙️ 재고 파악</span>
+                            </div>
+
+                            <div class="bg-white rounded-3xl rounded-tl-md p-6 shadow-md border border-[#E5DCCB]">
+                                <p class="text-[#0F172A] font-bold text-base sm:text-lg leading-relaxed">
+                                    "샌드위치가 예상보다 많이 나가서 <span class="text-[#EA580C] bg-amber-50 px-1.5 py-0.5 rounded">치아바타 빵 5개 남았고</span>, <span class="text-[#EA580C] bg-amber-50 px-1.5 py-0.5 rounded">양상추는 다 썼어.</span><br><br>
+                                    내일 필요한 재료 좀 쫙 정리해 줘."
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-[#334155] font-semibold mt-5 flex items-center gap-1.5">
+                            <span>📦</span> 냉장고 문을 열고 남은 재료만 말하면 발주 수량을 알아서 계산합니다.
+                        </p>
+                    </div>
+
+                    <!-- 우측: AI 생성 결과 (체크리스트 카드 + 주황색 포인트 버튼) -->
+                    <div class="lg:col-span-7 bg-white rounded-[30px] p-7 sm:p-8 shadow-2xl border-2 border-[#0F172A]/10 flex flex-col justify-between">
+                        <div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-5 pb-4 border-b-2 border-dashed border-gray-200">
+                                <div>
+                                    <span class="inline-block px-2.5 py-0.5 rounded bg-[#0F172A] text-[#FBBF24] text-xs font-extrabold mb-1">[내일 발주 리스트]</span>
+                                    <h4 class="text-lg sm:text-xl font-extrabold text-[#0F172A]">
+                                        "판매량과 재고를 바탕으로 발주 리스트를 준비했습니다."
+                                    </h4>
+                                </div>
+                                <span class="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">체크리스트 위젯</span>
+                            </div>
+
+                            <!-- [체크 박스 리스트] -->
+                            <div class="space-y-3 mb-6">
+                                <label class="flex items-center justify-between p-4 rounded-2xl bg-[#FAF6EE] border border-[#E5DCCB] hover:border-[#FF8A00] cursor-pointer transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <input type="checkbox" checked class="w-5 h-5 accent-[#FF8A00] rounded">
+                                        <span class="text-base sm:text-lg font-extrabold text-[#0F172A]">✓ 치아바타 빵 25개</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-[#EA580C] bg-orange-50 px-2.5 py-1 rounded-lg">잔여 5개 보충</span>
+                                </label>
+                                <label class="flex items-center justify-between p-4 rounded-2xl bg-[#FAF6EE] border border-[#E5DCCB] hover:border-[#FF8A00] cursor-pointer transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <input type="checkbox" checked class="w-5 h-5 accent-[#FF8A00] rounded">
+                                        <span class="text-base sm:text-lg font-extrabold text-[#0F172A]">✓ 신선 양상추 2박스</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-lg">전량 소진</span>
+                                </label>
+                                <label class="flex items-center justify-between p-4 rounded-2xl bg-[#FAF6EE] border border-[#E5DCCB] hover:border-[#FF8A00] cursor-pointer transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <input type="checkbox" checked class="w-5 h-5 accent-[#FF8A00] rounded">
+                                        <span class="text-base sm:text-lg font-extrabold text-[#0F172A]">✓ 수프용 감자 1박스</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">세트 인기 반영</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- [포인트 버튼] -->
+                        <div>
+                            <button 
+                                onclick="document.getElementById('main-sms-preview').classList.remove('hidden')" 
+                                class="w-full bg-[#FF8A00] hover:bg-[#EA580C] text-white text-base sm:text-lg font-extrabold py-4 px-6 rounded-2xl shadow-[0_8px_24px_rgba(255,138,0,0.4)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                            >
+                                <span>📨 거래처 사장님께 발주 문자 바로 보내기</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
+                            <div id="main-sms-preview" class="hidden mt-3 bg-[#0F172A] text-white rounded-xl p-3.5 text-xs border border-[#FBBF24]/40">
+                                <span class="text-[#FBBF24] font-extrabold block mb-0.5">✅ 발주 문자 전송 준비 완료</span>
+                                "사장님, 내일 오전 배송으로 [치아바타 빵 25개 / 신선 양상추 2박스 / 수프용 감자 1박스] 발주 부탁드립니다!"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4-2. 상세페이지 핵심 구성: '마케팅 도와줘' 섹션 (딥 네이비 + 소프트 베이지 + 오렌지 포인트) -->
+    <section id="marketing-showcase" class="py-20 md:py-28 bg-[#0F172A] text-white relative overflow-hidden">
+        <!-- 따뜻한 오렌지 & 베이지 배경 조명 -->
+        <div class="absolute top-12 left-1/4 w-96 h-96 bg-[#FF6B2B]/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-12 right-1/4 w-96 h-96 bg-[#FAF6EE]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto px-5 sm:px-6 relative z-10">
+            <!-- 섹션 헤더 -->
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FF6B2B]/20 border border-[#FF6B2B]/40 text-[#FB923C] font-bold text-xs sm:text-sm mb-4">
+                    <span>📣 '마케팅 도와줘' 상세 가이드</span>
+                    <span>·</span>
+                    <a href="marketing.html" class="underline hover:text-white">전용 상세페이지 열기 ↗</a>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                    사장님의 <span class="text-[#FB923C]">'말 한마디'</span>가<br class="sm:hidden">
+                    <span class="text-[#FAF6EE] underline decoration-[#FF6B2B] decoration-4 underline-offset-8">'전문 마케팅 콘텐츠'</span>로 바뀝니다
+                </h2>
+                <p class="text-[#E6DBC8] mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                    차가운 IT 프로그램이 아닙니다. 바쁜 사장님의 고충을 덜어주는 따뜻하고 친근한 비서가<br class="hidden sm:block">
+                    리뷰 답글부터 전단지, 블로그, 인스타 카드뉴스까지 대신 작성해 드립니다.
+                </p>
+            </div>
+
+            <!-- 4가지 마케팅 변환 카드 리스트 (스크롤하며 하나씩 매력적으로 확인) -->
+            <div class="space-y-10 md:space-y-14">
+
+                <!-- [카드 1] 고객 리뷰 답글 자동 생성 -->
+                <div class="bg-[#FAF6EE] text-[#0F172A] rounded-[28px] shadow-2xl border border-[#E6DBC8] overflow-hidden">
+                    <div class="bg-[#1E293B] px-6 py-4 sm:px-8 sm:py-5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10">
+                        <div class="flex items-center gap-3">
+                            <span class="w-9 h-9 rounded-xl bg-[#FF6B2B] text-white font-extrabold flex items-center justify-center text-sm shadow">01</span>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-white">고객 리뷰 답글 자동 생성</h3>
+                        </div>
+                        <span class="text-xs font-bold text-[#FB923C] bg-white/10 px-3 py-1 rounded-full">배달앱 · 영수증 리뷰 관리</span>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                        <!-- 좌측: 사장님 음성 -->
+                        <div class="lg:col-span-5 p-6 sm:p-8 bg-[#F3ECE0] flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#E6DBC8]">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0F172A] text-[#FAF6EE] text-xs font-bold mb-4">
+                                    🎙️ 사장님 음성
+                                </span>
+                                <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DBC8]">
+                                    <p class="text-[#0F172A] font-bold text-base leading-relaxed">
+                                        "별점 5점 받고 치아바타 샌드위치 맛있다고 한 리뷰에 고맙다고 답글 달아줘. <span class="text-[#EA580C] bg-orange-50 px-1 rounded">다음에 오면 아메리카노 서비스 준다고 하고.</span>"
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 font-medium mt-4">💬 바쁜 마감 시간, 타이핑 없이 말로 툭 던지세요.</p>
+                        </div>
+                        <!-- 우측: AI 생성 결과 -->
+                        <div class="lg:col-span-7 p-6 sm:p-8 bg-white flex flex-col justify-center">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-[#EA580C] text-xs font-extrabold border border-orange-200">
+                                    ✨ AI 생성 결과
+                                </span>
+                                <span class="text-amber-400 text-sm font-bold">★★★★★ 5.0 리뷰 답글</span>
+                            </div>
+                            <div class="bg-[#0F172A] text-[#FAF6EE] rounded-2xl p-6 shadow-md border-l-4 border-[#FF6B2B]">
+                                <p class="text-base sm:text-lg font-medium leading-relaxed">
+                                    "고객님, 소중한 별점 5점 리뷰 감사합니다! 맛에 보람을 느낍니다. 다음 방문 시 이 리뷰를 보여주시면 <strong class="text-[#FB923C] underline underline-offset-4">시원한 아메리카노를 서비스로 대접</strong>하겠습니다."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [카드 2] 홍보 전단지 초안 작성 -->
+                <div class="bg-[#FAF6EE] text-[#0F172A] rounded-[28px] shadow-2xl border border-[#E6DBC8] overflow-hidden">
+                    <div class="bg-[#1E293B] px-6 py-4 sm:px-8 sm:py-5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10">
+                        <div class="flex items-center gap-3">
+                            <span class="w-9 h-9 rounded-xl bg-[#FF6B2B] text-white font-extrabold flex items-center justify-center text-sm shadow">02</span>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-white">홍보 전단지 초안 작성</h3>
+                        </div>
+                        <span class="text-xs font-bold text-[#FB923C] bg-white/10 px-3 py-1 rounded-full">신메뉴 출시 · 오프라인 배너/전단지</span>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                        <!-- 좌측: 사장님 음성 -->
+                        <div class="lg:col-span-5 p-6 sm:p-8 bg-[#F3ECE0] flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#E6DBC8]">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0F172A] text-[#FAF6EE] text-xs font-bold mb-4">
+                                    🎙️ 사장님 음성
+                                </span>
+                                <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DBC8]">
+                                    <p class="text-[#0F172A] font-bold text-base leading-relaxed">
+                                        "봄맞이 신메뉴로 <span class="text-[#EA580C] bg-orange-50 px-1 rounded">딸기 리코타 치즈 샐러드</span> 시작한다고 전단지 문구 좀 짜줘. 근처 직장인 점심 10% 할인 강조하고."
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 font-medium mt-4">💬 메뉴 특징과 할인 혜택만 말하면 홍보 카피가 완성됩니다.</p>
+                        </div>
+                        <!-- 우측: AI 생성 결과 -->
+                        <div class="lg:col-span-7 p-6 sm:p-8 bg-white flex flex-col justify-center">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-[#EA580C] text-xs font-extrabold border border-orange-200">
+                                    ✨ AI 생성 결과
+                                </span>
+                                <span class="text-xs font-bold text-slate-400">전단지 · POP 초안</span>
+                            </div>
+                            <div class="bg-gradient-to-br from-[#FAF6EE] to-orange-50/70 rounded-2xl p-6 border-2 border-[#FF6B2B]/40 shadow-sm space-y-3">
+                                <div>
+                                    <span class="text-xs font-extrabold text-[#EA580C]">[메인 카피]</span>
+                                    <p class="text-lg sm:text-xl font-extrabold text-[#0F172A] mt-0.5">
+                                        "나른한 봄날, 상큼함이 필요할 때! 딸기 리코타 치즈 샐러드 출시!"
+                                    </p>
+                                </div>
+                                <div class="bg-[#0F172A] text-white rounded-xl p-4 flex items-center justify-between gap-3">
+                                    <div>
+                                        <span class="text-xs font-extrabold text-[#FB923C] block">[혜택]</span>
+                                        <p class="text-sm sm:text-base font-bold">인근 직장인 사원증 제시 시 런치 타임 10% 할인!</p>
+                                    </div>
+                                    <span class="px-3 py-1.5 rounded-lg bg-[#FF6B2B] text-white font-extrabold text-xs shrink-0">10% OFF</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [카드 3] 사진 활용 블로그 게시물 작성 -->
+                <div class="bg-[#FAF6EE] text-[#0F172A] rounded-[28px] shadow-2xl border border-[#E6DBC8] overflow-hidden">
+                    <div class="bg-[#1E293B] px-6 py-4 sm:px-8 sm:py-5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10">
+                        <div class="flex items-center gap-3">
+                            <span class="w-9 h-9 rounded-xl bg-[#FF6B2B] text-white font-extrabold flex items-center justify-center text-sm shadow">03</span>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-white">사진 활용 블로그 게시물 작성</h3>
+                        </div>
+                        <span class="text-xs font-bold text-[#FB923C] bg-white/10 px-3 py-1 rounded-full">동네 맛집 검색 노출 · 감성 홍보글</span>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                        <!-- 좌측: 사장님 음성 -->
+                        <div class="lg:col-span-5 p-6 sm:p-8 bg-[#F3ECE0] flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#E6DBC8]">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0F172A] text-[#FAF6EE] text-xs font-bold mb-4">
+                                    📸 사진 첨부 + 🎙️ 사장님 음성
+                                </span>
+                                <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DBC8] space-y-3">
+                                    <div class="flex items-center gap-3 bg-[#FAF6EE] p-2.5 rounded-xl border border-[#E6DBC8]">
+                                        <span class="w-11 h-11 rounded-lg bg-amber-100 flex items-center justify-center text-2xl">🥖</span>
+                                        <div>
+                                            <span class="text-[11px] font-extrabold text-[#EA580C]">(갓 구운 빵 사진 첨부)</span>
+                                            <p class="text-xs font-bold text-[#0F172A]">오븐에서 갓 나온 치아바타.jpg</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-[#0F172A] font-bold text-base leading-relaxed">
+                                        "비도 오는데 <span class="text-[#EA580C] bg-orange-50 px-1 rounded">따뜻한 조개 수프랑 같이 먹으면 좋겠다고</span> 감성적으로 블로그 글 써줘."
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 font-medium mt-4">💬 사진 한 장과 오늘 날씨만 말하면 감성 블로그 글이 뚝딱!</p>
+                        </div>
+                        <!-- 우측: AI 생성 결과 -->
+                        <div class="lg:col-span-7 p-6 sm:p-8 bg-white flex flex-col justify-center">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-[#EA580C] text-xs font-extrabold border border-orange-200">
+                                    ✨ AI 생성 결과
+                                </span>
+                                <span class="text-xs font-bold text-emerald-600">N 블로그 포스팅 초안</span>
+                            </div>
+                            <div class="bg-[#FAF6EE] rounded-2xl p-6 border border-[#E6DBC8] shadow-sm space-y-3">
+                                <div class="border-b border-[#E6DBC8] pb-3">
+                                    <span class="text-xs font-extrabold text-[#EA580C]">[제목]</span>
+                                    <h4 class="text-lg sm:text-xl font-extrabold text-[#0F172A] mt-0.5">
+                                        비 오는 날, 갓 구운 치아바타와 따뜻한 조개 수프 어떠세요?
+                                    </h4>
+                                </div>
+                                <p class="text-base text-slate-800 font-medium leading-relaxed bg-white p-4 rounded-xl border border-[#E6DBC8]/70">
+                                    "창밖으로 빗소리가 들리는 아침, <strong class="text-[#EA580C]">겉바속촉 빵을 따끈한 수프에 콕 찍어</strong> 드셔보세요."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- [카드 4] 인스타그램 카드뉴스 기획 -->
+                <div class="bg-[#FAF6EE] text-[#0F172A] rounded-[28px] shadow-2xl border border-[#E6DBC8] overflow-hidden">
+                    <div class="bg-[#1E293B] px-6 py-4 sm:px-8 sm:py-5 flex flex-wrap items-center justify-between gap-3 border-b border-white/10">
+                        <div class="flex items-center gap-3">
+                            <span class="w-9 h-9 rounded-xl bg-[#FF6B2B] text-white font-extrabold flex items-center justify-center text-sm shadow">04</span>
+                            <h3 class="text-lg sm:text-xl font-extrabold text-white">인스타그램 카드뉴스 기획</h3>
+                        </div>
+                        <span class="text-xs font-bold text-[#FB923C] bg-white/10 px-3 py-1 rounded-full">인스타 3장 슬라이드 기획</span>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                        <!-- 좌측: 사장님 음성 -->
+                        <div class="lg:col-span-5 p-6 sm:p-8 bg-[#F3ECE0] flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-[#E6DBC8]">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0F172A] text-[#FAF6EE] text-xs font-bold mb-4">
+                                    🎙️ 사장님 음성
+                                </span>
+                                <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#E6DBC8]">
+                                    <p class="text-[#0F172A] font-bold text-base leading-relaxed">
+                                        "우리 가게 샌드위치가 왜 특별한지 <span class="text-[#EA580C] bg-orange-50 px-1 rounded">3장짜리로 인스타에 올리게</span> 써줘."
+                                    </p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-600 font-medium mt-4">💬 슬라이드별 핵심 카피를 순서대로 기획해 드립니다.</p>
+                        </div>
+                        <!-- 우측: AI 생성 결과 (3장 슬라이드 카드) -->
+                        <div class="lg:col-span-7 p-6 sm:p-8 bg-white flex flex-col justify-center">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 text-[#EA580C] text-xs font-extrabold border border-orange-200">
+                                    ✨ AI 생성 결과 (3장 카드뉴스)
+                                </span>
+                                <span class="text-xs font-bold text-slate-400">1장 ~ 3장 슬라이드</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                                <!-- 1장 -->
+                                <div class="bg-[#0F172A] text-white rounded-2xl p-4 flex flex-col justify-between min-h-[150px] shadow">
+                                    <span class="inline-block w-fit px-2.5 py-0.5 rounded-full bg-[#FF6B2B] text-xs font-extrabold">1장</span>
+                                    <p class="font-extrabold text-sm sm:text-base leading-snug my-2">
+                                        "평범함은 가라! 우리 동네 샌드위치가 특별한 3가지 이유"
+                                    </p>
+                                    <span class="text-[11px] text-slate-400">표지 · 시선 집중</span>
+                                </div>
+                                <!-- 2장 -->
+                                <div class="bg-[#FAF6EE] text-[#0F172A] rounded-2xl p-4 flex flex-col justify-between min-h-[150px] border-2 border-[#E6DBC8] shadow-sm">
+                                    <span class="inline-block w-fit px-2.5 py-0.5 rounded-full bg-[#0F172A] text-white text-xs font-extrabold">2장</span>
+                                    <p class="font-extrabold text-sm sm:text-base leading-snug my-2">
+                                        "매일 굽는 천연 발효종, 아낌없는 신선한 속재료"
+                                    </p>
+                                    <span class="text-[11px] text-[#EA580C] font-bold">본문 · 핵심 비결</span>
+                                </div>
+                                <!-- 3장 -->
+                                <div class="bg-gradient-to-br from-[#FF6B2B] to-[#EA580C] text-white rounded-2xl p-4 flex flex-col justify-between min-h-[150px] shadow">
+                                    <span class="inline-block w-fit px-2.5 py-0.5 rounded-full bg-[#0F172A] text-white text-xs font-extrabold">3장</span>
+                                    <p class="font-extrabold text-sm sm:text-base leading-snug my-2">
+                                        "단체 주문 폭주 중! 최소 하루 전 예약 필수!"
+                                    </p>
+                                    <span class="text-[11px] text-orange-100 font-bold">마무리 · 예약 유도</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4-3. 상세페이지 핵심 구성: '내 가게 성장시키기' 섹션 (2x2 경영 컨설팅 대시보드 UI) -->
+    <section id="growth-showcase" class="py-20 md:py-28 bg-[#FAF6EE] text-[#0F172A] border-t border-[#E5DCCB] relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6 relative z-10">
+            <!-- 섹션 헤더 -->
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0F172A] text-emerald-400 font-extrabold text-xs sm:text-sm mb-4 shadow-sm">
+                    <span>📊 '내 가게 성장시키기' 경영 컨설팅 리포트</span>
+                    <span>·</span>
+                    <a href="growth.html" class="underline hover:text-white">전용 상세페이지 열기 ↗</a>
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight leading-snug break-keep">
+                    "막막한 1인 매장,<br class="sm:hidden">
+                    <span class="text-emerald-600 underline decoration-emerald-500/40 decoration-4 underline-offset-8">프랜차이즈 본사급 밀착 컨설팅</span>을<br>
+                    받아보세요."
+                </h2>
+                <p class="text-[#334155] mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+                    쌓인 장부 데이터를 바탕으로 우리 매장만의 전담 슈퍼바이저가 핵심을 찌르는 4대 성장 리포트를 제공합니다.
+                </p>
+            </div>
+
+            <!-- 4가지 컨설팅 리포트 위젯 (2x2 그리드 배치) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-7 items-stretch">
+
+                <!-- 1. 30일 성장 로드맵 (깃발/캘린더 아이콘) -->
+                <div class="bg-white rounded-[30px] p-7 sm:p-8 shadow-xl border border-[#E5DCCB] flex flex-col justify-between hover:-translate-y-1 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-5 pb-4 border-b border-gray-100">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-2xl bg-[#0F172A] text-emerald-400 flex items-center justify-center text-2xl shadow">
+                                    🚩
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Report 01 · Roadmap</span>
+                                    <h3 class="text-xl font-extrabold text-[#0F172A]">1. 30일 성장 로드맵</h3>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-xs border border-emerald-200">
+                                3주차 미션 진행 중
+                            </span>
+                        </div>
+
+                        <div class="bg-[#FAF6EE] rounded-2xl p-5 border border-[#E5DCCB] mb-5">
+                            <p class="text-base sm:text-lg font-extrabold text-[#0F172A] leading-relaxed">
+                                "📈 <span class="text-emerald-600">이번 달 매출 20% 상승을 위한 3주차 미션:</span> 반응 좋은 치아바타 라인업 집중 홍보"
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 주차별 달성도 그래프 조각 -->
+                    <div class="bg-[#0F172A] text-white rounded-2xl p-4">
+                        <div class="flex justify-between text-xs mb-2.5">
+                            <span class="text-slate-300 font-bold">월 매출 +20% 달성 로드맵</span>
+                            <span class="text-emerald-400 font-extrabold">진행률 75%</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2 text-center text-[11px] font-bold">
+                            <div class="bg-emerald-500/20 text-emerald-300 py-1.5 rounded-lg border border-emerald-500/30">✓ 1주차</div>
+                            <div class="bg-emerald-500/20 text-emerald-300 py-1.5 rounded-lg border border-emerald-500/30">✓ 2주차</div>
+                            <div class="bg-emerald-500 text-[#0F172A] font-extrabold py-1.5 rounded-lg shadow">🔥 3주차</div>
+                            <div class="bg-white/5 text-slate-400 py-1.5 rounded-lg border border-white/10">4주차</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 경쟁업체 차별화 전략 (타겟/돋보기 아이콘) -->
+                <div class="bg-white rounded-[30px] p-7 sm:p-8 shadow-xl border border-[#E5DCCB] flex flex-col justify-between hover:-translate-y-1 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-5 pb-4 border-b border-gray-100">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl shadow">
+                                    🔍
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold text-blue-600 uppercase tracking-wider">Report 02 · Positioning</span>
+                                    <h3 class="text-xl font-extrabold text-[#0F172A]">2. 경쟁업체 차별화 전략</h3>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-extrabold text-xs border border-blue-200">
+                                상권 타겟 분석
+                            </span>
+                        </div>
+
+                        <div class="bg-blue-50/50 rounded-2xl p-5 border border-blue-100 mb-5">
+                            <p class="text-base sm:text-lg font-extrabold text-[#0F172A] leading-relaxed">
+                                "🔍 인근 카페는 달콤한 디저트 위주입니다. <span class="text-blue-600">수제 샌드위치와 따뜻한 수프를 묶어</span> <span class="bg-[#0F172A] text-emerald-400 px-2 py-0.5 rounded">'건강한 한 끼'로 포지셔닝</span> 하세요!"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#FAF6EE] rounded-2xl p-4 border border-[#E5DCCB] flex items-center justify-between text-xs font-bold">
+                        <span class="text-slate-500">인근 카페: 디저트 78% 과밀</span>
+                        <span class="text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">🎯 수제 샌드위치+수프 독점</span>
+                    </div>
+                </div>
+
+                <!-- 3. 메뉴 수익성 진단 (차트/돈 아이콘) -->
+                <div class="bg-white rounded-[30px] p-7 sm:p-8 shadow-xl border border-[#E5DCCB] flex flex-col justify-between hover:-translate-y-1 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-5 pb-4 border-b border-gray-100">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow">
+                                    💰
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-wider">Report 03 · Profitability</span>
+                                    <h3 class="text-xl font-extrabold text-[#0F172A]">3. 메뉴 수익성 진단</h3>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-xs border border-emerald-200">
+                                마진율 정밀 분석
+                            </span>
+                        </div>
+
+                        <div class="bg-[#FAF6EE] rounded-2xl p-5 border border-[#E5DCCB] mb-5 space-y-2.5">
+                            <p class="text-base sm:text-lg font-extrabold text-[#0F172A]">
+                                "🏆 효자 메뉴: <span class="text-emerald-600">B.L.T 샌드위치 (마진 68%)</span>"
+                            </p>
+                            <p class="text-sm sm:text-base font-extrabold text-slate-700 pt-2 border-t border-[#E5DCCB]">
+                                "⚠️ 주의: <span class="text-amber-600">생과일주스</span> (원가율 상승, 시즌 메뉴로 전환 추천)"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#0F172A] text-white rounded-2xl p-4 space-y-2.5 text-xs">
+                        <div>
+                            <div class="flex justify-between font-bold mb-1">
+                                <span class="text-emerald-400">🏆 B.L.T 샌드위치</span>
+                                <span>마진 68%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="bg-emerald-400 h-full" style="width: 68%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between font-bold mb-1">
+                                <span class="text-amber-400">⚠️ 생과일주스 (원가 상승)</span>
+                                <span class="text-amber-400">시즌 전환 권장</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="bg-amber-400 h-full" style="width: 34%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. 단골 재방문 전략 (하트/메일 아이콘 + 문자 발송 버튼) -->
+                <div class="bg-[#0F172A] text-white rounded-[30px] p-7 sm:p-8 shadow-2xl border-2 border-emerald-500/70 flex flex-col justify-between hover:-translate-y-1 transition-all relative overflow-hidden">
+                    <div>
+                        <div class="flex items-center justify-between mb-5 pb-4 border-b border-white/10">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-blue-500 text-white flex items-center justify-center text-2xl shadow">
+                                    💌
+                                </div>
+                                <div>
+                                    <span class="text-xs font-extrabold text-emerald-400 uppercase tracking-wider">Report 04 · CRM Retention</span>
+                                    <h3 class="text-xl font-extrabold text-white">4. 단골 재방문 전략</h3>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold text-xs border border-emerald-400/30">
+                                3주 미방문 15명
+                            </span>
+                        </div>
+
+                        <div class="bg-[#1E293B] rounded-2xl p-5 border border-white/10 mb-5">
+                            <p class="text-base sm:text-lg font-extrabold text-[#FAF6EE] leading-relaxed">
+                                "💌 <span class="text-emerald-400">3주 미방문 단골 15명 발견.</span> <span class="text-blue-300 underline decoration-blue-400 underline-offset-4">'주말 한정 아메리카노 무료 업그레이드'</span> 맞춤 문자를 발송할까요?"
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button 
+                            onclick="document.getElementById('growth-crm-toast').classList.remove('hidden')" 
+                            class="w-full bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-extrabold text-base py-4 px-5 rounded-2xl shadow-[0_8px_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                        >
+                            <span>📩 단골 15명에게 맞춤 문자 발송하기</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                        <div id="growth-crm-toast" class="hidden mt-3 bg-slate-950 rounded-xl p-3.5 text-xs text-emerald-300 border border-emerald-500/40">
+                            ✅ 3주 미방문 단골 15명에게 '주말 한정 아메리카노 무료 업그레이드' 쿠폰 문자가 발송되었습니다!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. 사용 장면 시연 (Use Case) : 기능 검증 (채팅 시뮬레이션 + 실제 영상) -->
+    <section id="use-case" class="py-20 md:py-28 bg-gradient-to-b from-brand-cream to-white border-t border-amber-900/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-brand-accent font-extrabold text-sm tracking-widest uppercase">Live Demo & Video</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-text mt-2 tracking-tight">
+                    "실제로는 이렇게 대화합니다"
+                </h2>
+                <p class="text-brand-gray mt-4 text-base sm:text-lg">
+                    복잡한 명령어를 외울 필요 없습니다. 실제 비서와 대화하듯 편하게 말씀해 보세요.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <!-- 왼쪽: 스마트폰 채팅창 UI 시뮬레이션 -->
+                <div class="lg:col-span-6 flex flex-col items-center">
+                    <!-- 시나리오 선택 탭 -->
+                    <div class="flex flex-wrap justify-center gap-2 mb-5">
+                        <button onclick="setDemoScenario(0)" id="demo-tab-0" class="demo-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-brand-accent text-white shadow-sm transition-all">
+                            🥪 판매 & 재고 등록 (기본)
+                        </button>
+                        <button onclick="setDemoScenario(1)" id="demo-tab-1" class="demo-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-gray-600 border border-gray-200 hover:border-brand-accent transition-all">
+                            💝 단골손님 메모
+                        </button>
+                        <button onclick="setDemoScenario(2)" id="demo-tab-2" class="demo-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-gray-600 border border-gray-200 hover:border-brand-accent transition-all">
+                            📣 SNS 홍보 글 요청
+                        </button>
+                    </div>
+
+                    <!-- 스마트폰 프레임 -->
+                    <div class="w-full max-w-[400px] bg-gray-900 rounded-[40px] p-3.5 shadow-2xl border-4 border-gray-800">
+                        <div class="bg-brand-bg rounded-[30px] overflow-hidden border border-gray-200">
+                            <!-- 상단 상태바 -->
+                            <div class="bg-white px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-9 h-9 rounded-full bg-brand-accent/15 flex items-center justify-center text-lg">🗣️</span>
+                                    <div>
+                                        <p class="text-sm font-extrabold text-brand-text">말하는 가게비서 AI</p>
+                                        <p class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                                            음성 인식 대기 중
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400">실시간 연동</span>
+                            </div>
+
+                            <!-- 대화 내역 영역 -->
+                            <div class="p-5 space-y-4 min-h-[320px] flex flex-col justify-center" id="chat-container">
+                                <!-- 사장님 말풍선 -->
+                                <div class="flex flex-col items-end">
+                                    <span class="text-[11px] text-gray-400 mb-1 mr-1">사장님 (음성 입력)</span>
+                                    <div id="chat-owner" class="bg-brand-accent text-white px-4 py-3 rounded-2xl rounded-tr-sm text-sm font-bold shadow-md max-w-[85%] leading-relaxed">
+                                        "오늘 샌드버거밥 20개 팔았어."
+                                    </div>
+                                </div>
+
+                                <!-- 가게비서 응답 말풍선 -->
+                                <div class="flex items-start gap-2.5">
+                                    <div class="w-8 h-8 rounded-full bg-gray-900 text-white flex items-center justify-center text-sm shrink-0 mt-1">🤖</div>
+                                    <div class="flex-1">
+                                        <span class="text-[11px] text-gray-400 mb-1 block">가게비서</span>
+                                        <div id="chat-ai" class="bg-white text-brand-text px-4 py-3.5 rounded-2xl rounded-tl-sm text-sm font-medium shadow-sm border border-gray-200/80 leading-relaxed">
+                                            "네, <strong class="text-brand-accent">샌드버거밥 20개 판매 등록 완료</strong>했습니다. 오늘 목표 매출의 <strong class="text-emerald-600">80%를 달성</strong>하셨네요! 🎉<br><br>내일 장사를 위해 빵과 속재료 재고도 지금 바로 정리해 드릴까요?"
+                                        </div>
+                                        <!-- 빠른 액션 칩 -->
+                                        <div id="chat-chips" class="flex flex-wrap gap-1.5 mt-2.5">
+                                            <span class="px-3 py-1 bg-red-50 text-brand-accent rounded-full text-xs font-bold border border-red-100">✅ 응, 재고 정리해 줘</span>
+                                            <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">📊 오늘 총매출 보기</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 하단 마이크 바 -->
+                            <div class="bg-white px-5 py-3.5 border-t border-gray-100 flex items-center justify-between">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1 h-4 bg-brand-accent rounded-full wave-bar" style="animation-delay: 0.1s"></span>
+                                    <span class="w-1 h-6 bg-brand-accent rounded-full wave-bar" style="animation-delay: 0.3s"></span>
+                                    <span class="w-1 h-3 bg-brand-accent rounded-full wave-bar" style="animation-delay: 0.2s"></span>
+                                    <span class="w-1 h-5 bg-brand-accent rounded-full wave-bar" style="animation-delay: 0.4s"></span>
+                                    <span class="text-xs text-gray-500 font-medium ml-2">버튼을 누르고 편하게 말씀하세요</span>
+                                </div>
+                                <div class="w-10 h-10 rounded-full bg-brand-accent text-white flex items-center justify-center shadow-md">
+                                    🎙️
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 실제 솔루션 소개 영상 (영상 (1).mp4 활용) -->
+                <div class="lg:col-span-6">
+                    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="px-3 py-1 rounded-full bg-red-50 text-brand-accent font-extrabold text-xs">🎬 30초 스토리 영상</span>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-brand-text mt-2">
+                                    복잡한 매장 관리가 한순간에 편해지는 과정
+                                </h3>
+                            </div>
+                        </div>
+                        
+                        <div class="rounded-2xl overflow-hidden bg-black shadow-lg border border-gray-200 aspect-video relative">
+                            <video 
+                                id="promo-video"
+                                class="w-full h-full object-cover" 
+                                controls 
+                                preload="metadata"
+                                playsinline
+                            >
+                                <source src="영상 (1).mp4" type="video/mp4">
+                                브라우저가 비디오 태그를 지원하지 않습니다.
+                            </video>
+                        </div>
+
+                        <div class="mt-5 grid grid-cols-3 gap-3 text-center text-xs">
+                            <div class="bg-brand-bg p-3 rounded-xl border border-amber-900/10">
+                                <p class="font-extrabold text-brand-text">00:00 ~ 00:08</p>
+                                <p class="text-gray-500 mt-0.5">혼자서 벅찬 매장 일</p>
+                            </div>
+                            <div class="bg-brand-bg p-3 rounded-xl border border-amber-900/10">
+                                <p class="font-extrabold text-brand-accent">00:09 ~ 00:27</p>
+                                <p class="text-gray-500 mt-0.5">AI 음성비서 도입</p>
+                            </div>
+                            <div class="bg-brand-bg p-3 rounded-xl border border-amber-900/10">
+                                <p class="font-extrabold text-emerald-600">00:28 ~ 00:37</p>
+                                <p class="text-gray-500 mt-0.5">매출 성장 & 여유 확보</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. 브랜드 스토리 및 검증 (Brand Story) : 신뢰도 구축 -->
+    <section id="brand-story" class="py-20 md:py-28 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="bg-brand-bg rounded-[32px] p-8 sm:p-12 md:p-14 border border-amber-900/10 shadow-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    
+                    <!-- 스토리 본문 (브랜드 스토리.hwpx 핵심 요약 반영) -->
+                    <div class="lg:col-span-7">
+                        <span class="inline-block px-3.5 py-1 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs tracking-wider uppercase mb-4">
+                            Brand Story · 당신의 완벽한 '독자생존'을 위하여
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-text leading-tight mb-5">
+                            "거대한 조직을 떠나 홀로 선 골목,<br>
+                            <span class="text-brand-accent">장사하는 사람의 언어를 아는 생존 무기</span>를 만들었습니다."
+                        </h2>
+                        
+                        <div class="space-y-3.5 text-brand-gray text-sm sm:text-base leading-relaxed mb-6">
+                            <p>
+                                30년간 조직에서 시스템과 교육을 다뤘지만, 직접 오븐 앞에서 치아바타 빵을 구우며 깨달았습니다. 골목의 작은 가게야말로 사장님 혼자 <strong class="text-brand-text">요리사·회계사·마케터·재고 관리자</strong>까지 만능이 되어야 하는 치열한 최전선이라는 것을요.
+                            </p>
+                            <p>
+                                밀가루 묻은 손으로 마우스나 복잡한 엑셀을 만질 순 없습니다. 주방에서, 혹은 퇴근길 차 안에서 <strong class="text-brand-text">"오늘 샌드위치 20개 나갔고, 토마토 3상자 남았어"</strong>라고 툭 던지듯 말하면 알아서 척척 정리해 주는 비서가 필요했습니다.
+                            </p>
+                        </div>
+
+                        <!-- 핵심 가치 3줄 요약 배지 -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-6 text-xs sm:text-sm font-bold">
+                            <div class="bg-white p-3.5 rounded-2xl border border-amber-900/10 shadow-sm text-center">
+                                <span class="block text-brand-accent mb-0.5">01. 현장 검증</span>
+                                <span class="text-brand-text">직접 매장 운영하며 개발</span>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-2xl border border-amber-900/10 shadow-sm text-center">
+                                <span class="block text-brand-accent mb-0.5">02. 무입력 방식</span>
+                                <span class="text-brand-text">엑셀·타이핑 없이 말로 끝</span>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-2xl border border-amber-900/10 shadow-sm text-center">
+                                <span class="block text-brand-accent mb-0.5">03. 본질에 집중</span>
+                                <span class="text-brand-text">요리·손님·온전한 쉼 회복</span>
+                            </div>
+                        </div>
+
+                        <blockquote class="border-l-4 border-brand-accent pl-4 py-1 text-gray-800 font-bold text-sm sm:text-base">
+                            "반복적인 관리는 비서에게 맡기세요. 사장님은 맛있는 레시피와 단골손님에게 건네는 미소, 그리고 장사 끝난 뒤의 온전한 쉼에만 집중하시길 바랍니다."
+                        </blockquote>
+                    </div>
+
+                    <!-- 만든 사람 소개 & 10초 브랜드 CF 영상 카드 -->
+                    <div class="lg:col-span-5 space-y-5">
+                        <!-- 10초 CF 티저 영상 플레이어 카드 -->
+                        <div class="bg-[#0F172A] text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-slate-800">
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2.5 py-1 rounded-full bg-brand-accent text-white font-extrabold text-[11px]">
+                                        🎬 10초 브랜드 CF
+                                    </span>
+                                    <span class="text-xs font-bold text-amber-300">"사장님, 요즘 장사하기 힘드시죠?"</span>
+                                </div>
+                                <!-- 영상 버전 전환 탭 -->
+                                <div class="flex items-center gap-1 bg-slate-800 p-1 rounded-lg text-[11px] font-bold">
+                                    <button type="button" id="brand-vid-btn-1" onclick="switchBrandVideo('1014_1080p_20261020104236.mp4', 1)" class="px-2 py-0.5 rounded bg-brand-accent text-white transition-all">
+                                        말하는가게비서 편
+                                    </button>
+                                    <button type="button" id="brand-vid-btn-2" onclick="switchBrandVideo('1014.mp4', 2)" class="px-2 py-0.5 rounded text-slate-300 hover:text-white transition-all">
+                                        씽티 AI 랩 원본
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="rounded-2xl overflow-hidden bg-black border border-slate-700 aspect-video shadow-lg">
+                                <video 
+                                    id="brand-story-video"
+                                    class="w-full h-full object-cover" 
+                                    controls 
+                                    preload="metadata"
+                                    playsinline
+                                >
+                                    <source id="brand-story-video-src" src="1014_1080p_20261020104236.mp4" type="video/mp4">
+                                    브라우저가 비디오 태그를 지원하지 않습니다.
+                                </video>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-2.5 flex items-center justify-between">
+                                <span>✨ ThinkT AI (씽티 랩) 음성경영비서 기술 탑재</span>
+                                <span class="text-slate-300 font-semibold">🔊 소리를 켜고 시청해 보세요</span>
+                            </p>
+                        </div>
+
+                        <!-- 만든 사람 소개 카드 -->
+                        <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-lg border border-gray-100">
+                            <div class="flex items-center gap-4 mb-5 pb-4 border-b border-gray-100">
+                                <img 
+                                    src="Gemini_Generated_Image_85e9j985e9j985e9.png" 
+                                    alt="만든 사람 프로필" 
+                                    class="w-14 h-14 rounded-2xl object-cover border border-gray-200 bg-brand-bg"
+                                >
+                                <div>
+                                    <span class="text-xs font-bold text-brand-accent">Founder & Store Owner</span>
+                                    <h3 class="text-lg font-extrabold text-brand-text">만든 사람 소개</h3>
+                                    <p class="text-xs text-gray-500">30년 조직·교육 전문가 & 현직 매장 사장님</p>
+                                </div>
+                            </div>
+
+                            <ul class="space-y-3.5">
+                                <li class="flex items-start gap-3">
+                                    <span class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-lg shrink-0">🏢</span>
+                                    <div>
+                                        <h4 class="font-extrabold text-brand-text text-sm">30년 조직 시스템 관리 · 인사교육 경험</h4>
+                                        <p class="text-xs text-gray-500 mt-0.5">누구나 쉽게 바로 쓸 수 있는 실전 업무 시스템 설계</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center text-lg shrink-0">📚</span>
+                                    <div>
+                                        <h4 class="font-extrabold text-brand-text text-sm">경영 · 교육 · 출판 기획 경험 보유</h4>
+                                        <p class="text-xs text-gray-500 mt-0.5">복잡한 매출·재고 데이터를 한눈에 정리하는 기획력</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center text-lg shrink-0">🍳</span>
+                                    <div>
+                                        <h4 class="font-extrabold text-brand-text text-sm">치아바타·샌드버거·주먹밥 매장 직접 운영</h4>
+                                        <p class="text-xs text-gray-500 mt-0.5">주방에서 매일 직접 부딪히며 '진짜 필요한 기능'만 검증</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. 요금 안내 (Pricing) : 진입 장벽 낮추기 -->
+    <section id="pricing" class="py-20 md:py-24 bg-brand-cream border-y border-amber-900/5">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <span class="text-brand-accent font-extrabold text-sm tracking-widest uppercase">Pricing</span>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-text mt-2 mb-4 tracking-tight">
+                "서비스 도입, 비용 걱정부터 하지 마세요."
+            </h2>
+            <p class="text-brand-gray text-base sm:text-lg mb-12">
+                사장님들의 목소리를 듣고 더 완벽한 비서로 거듭나기 위해 시범 운영 기간 동안 무료로 제공됩니다.
+            </p>
+
+            <!-- 요금 카드 -->
+            <div class="bg-white rounded-[32px] p-8 sm:p-12 shadow-xl border-2 border-brand-accent relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-brand-accent text-white text-xs font-extrabold px-5 py-2 rounded-bl-2xl">
+                    LIMITED FREE BETA
+                </div>
+
+                <p class="text-sm font-extrabold text-brand-accent uppercase tracking-wider mb-2">현재 시범 운영 기간</p>
+                <div class="flex items-baseline justify-center gap-3 my-4">
+                    <span class="text-gray-400 line-through text-xl font-bold">월 29,000원</span>
+                    <span class="text-4xl sm:text-6xl font-extrabold text-brand-text">전면 무료!</span>
+                </div>
+                <p class="text-emerald-600 font-bold text-base sm:text-lg mb-8">
+                    ✨ 모든 기능 제한 없이 100% 무료 사용 가능
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left max-w-xl mx-auto mb-9 text-sm font-semibold text-gray-700">
+                    <div class="flex items-center gap-2.5 bg-brand-bg px-4 py-3 rounded-xl">
+                        <span class="text-brand-accent font-bold">✔</span> 음성 매출/지출 장부 무제한 기록
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-brand-bg px-4 py-3 rounded-xl">
+                        <span class="text-brand-accent font-bold">✔</span> 식자재 재고 파악 및 발주 알림
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-brand-bg px-4 py-3 rounded-xl">
+                        <span class="text-brand-accent font-bold">✔</span> 단골손님 취향/방문 자동 메모
+                    </div>
+                    <div class="flex items-center gap-2.5 bg-brand-bg px-4 py-3 rounded-xl">
+                        <span class="text-brand-accent font-bold">✔</span> 인스타·블로그 홍보글 자동 생성
+                    </div>
+                </div>
+
+                <a href="#contact" class="inline-flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-accentHover text-white text-lg font-bold px-10 py-4 rounded-2xl shadow-[0_8px_20px_rgba(255,107,107,0.35)] hover:-translate-y-0.5 transition-all w-full sm:w-auto">
+                    <span>지금 무료로 비서 고용하기</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+
+                <p class="text-xs sm:text-sm text-gray-500 mt-5">
+                    ※ 시범 기간 종료 후에도 자동 결제되지 않으며, 사장님들 부담 없는 합리적인 월 구독료로 사전 안내될 예정입니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. 도입 문의 및 FAQ (Contact & FAQ) : 리드 확보 -->
+    <section id="contact" class="py-20 md:py-28 bg-brand-bg">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-brand-accent font-extrabold text-sm tracking-widest uppercase">Get Started & FAQ</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-text mt-2 tracking-tight">
+                    "가장 먼저 똑똑한 비서를 고용해 보세요."
+                </h2>
+                <p class="text-brand-gray mt-4 text-base sm:text-lg">
+                    아래 신청서를 남겨주시면 업종에 맞춘 무료 체험 안내를 가장 빠르게 도와드립니다.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                
+                <!-- 왼쪽: 사전 신청 폼 UI -->
+                <div class="lg:col-span-7 bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-gray-100">
+                    <h3 class="text-2xl font-extrabold text-brand-text mb-2">사전 신청 및 무료 체험 등록</h3>
+                    <p class="text-sm text-gray-500 mb-7">1분이면 신청이 완료됩니다. 신청 즉시 시범 운영 우선 안내 대상자로 등록됩니다.</p>
+
+                    <form id="lead-form" class="space-y-5">
+                        <!-- 성함 -->
+                        <div>
+                            <label for="owner-name" class="block text-sm font-bold text-gray-700 mb-2">성함 <span class="text-brand-accent">*</span></label>
+                            <input 
+                                type="text" 
+                                id="owner-name" 
+                                name="name"
+                                required
+                                placeholder="예: 홍길동 사장님" 
+                                class="w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm font-medium"
+                            >
+                        </div>
+
+                        <!-- 업종 -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">업종 선택 <span class="text-brand-accent">*</span></label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="category" value="카페" class="peer sr-only" checked>
+                                    <div class="text-center py-3 px-3 rounded-xl border border-gray-200 peer-checked:border-brand-accent peer-checked:bg-red-50 peer-checked:text-brand-accent font-bold text-sm transition-all">
+                                        ☕ 카페
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="category" value="베이커리" class="peer sr-only">
+                                    <div class="text-center py-3 px-3 rounded-xl border border-gray-200 peer-checked:border-brand-accent peer-checked:bg-red-50 peer-checked:text-brand-accent font-bold text-sm transition-all">
+                                        🥐 베이커리
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="category" value="식당" class="peer sr-only">
+                                    <div class="text-center py-3 px-3 rounded-xl border border-gray-200 peer-checked:border-brand-accent peer-checked:bg-red-50 peer-checked:text-brand-accent font-bold text-sm transition-all">
+                                        🍱 식당·분식
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="category" value="기타" class="peer sr-only">
+                                    <div class="text-center py-3 px-3 rounded-xl border border-gray-200 peer-checked:border-brand-accent peer-checked:bg-red-50 peer-checked:text-brand-accent font-bold text-sm transition-all">
+                                        🏪 기타 매장
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 연락처 -->
+                        <div>
+                            <label for="owner-phone" class="block text-sm font-bold text-gray-700 mb-2">연락처 <span class="text-brand-accent">*</span></label>
+                            <input 
+                                type="tel" 
+                                id="owner-phone" 
+                                name="phone"
+                                required
+                                placeholder="예: 010-1234-5678" 
+                                class="w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm font-medium"
+                            >
+                        </div>
+
+                        <!-- 가장 힘든 점 -->
+                        <div>
+                            <label for="owner-pain" class="block text-sm font-bold text-gray-700 mb-2">가장 힘든 점</label>
+                            <textarea 
+                                id="owner-pain" 
+                                name="painpoint"
+                                rows="3" 
+                                placeholder="장사하시면서 가장 힘든 점 한 가지를 자유롭게 적어주세요. (예: 마감 후 장부 정리, 재료 발주 계산, 인스타 홍보 등)" 
+                                class="w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm font-medium resize-none"
+                            ></textarea>
+                        </div>
+
+                        <!-- CTA 버튼 -->
+                        <button 
+                            type="submit" 
+                            class="w-full bg-brand-accent hover:bg-brand-accentHover text-white text-lg font-extrabold py-4 rounded-2xl shadow-[0_8px_20px_rgba(255,107,107,0.35)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+                        >
+                            <span>사전 신청 및 무료 체험하기</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        </button>
+                    </form>
+
+                    <!-- 신청 완료 메시지 박스 (제출 시 표시) -->
+                    <div id="form-success" class="hidden mt-6 bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
+                        <div class="text-3xl mb-2">🎉</div>
+                        <h4 class="text-lg font-extrabold text-emerald-900">무료 체험 사전 신청이 완료되었습니다!</h4>
+                        <p id="success-detail" class="text-sm text-emerald-700 mt-1"></p>
+                        <p class="text-xs text-emerald-600 mt-2">남겨주신 연락처로 빠르게 안내 메시지를 보내드리겠습니다.</p>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 자주 묻는 질문 (FAQ) & 직접 문의처 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-brand-text mb-4">자주 묻는 질문 (FAQ)</h3>
+                        
+                        <div class="space-y-3.5">
+                            <!-- FAQ 1 -->
+                            <div class="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-sm">
+                                <button onclick="toggleFaq(1)" class="w-full px-6 py-5 text-left flex items-center justify-between font-extrabold text-brand-text hover:text-brand-accent transition-colors">
+                                    <span>Q. 복잡한 기계 설치가 필요한가요?</span>
+                                    <span id="faq-icon-1" class="text-brand-accent text-xl font-bold">−</span>
+                                </button>
+                                <div id="faq-body-1" class="px-6 pb-5 text-sm text-brand-gray leading-relaxed border-t border-gray-100 pt-3">
+                                    <strong class="text-brand-text">아닙니다. 스마트폰만 있으면 됩니다.</strong><br>
+                                    별도의 포스기 교체나 복잡한 기기 설치 없이, 지금 사장님이 쓰고 계신 스마트폰으로 즉시 시작하실 수 있습니다.
+                                </div>
+                            </div>
+
+                            <!-- FAQ 2 -->
+                            <div class="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-sm">
+                                <button onclick="toggleFaq(2)" class="w-full px-6 py-5 text-left flex items-center justify-between font-extrabold text-brand-text hover:text-brand-accent transition-colors">
+                                    <span>Q. 제 발음이 안 좋은데 잘 알아들을까요?</span>
+                                    <span id="faq-icon-2" class="text-brand-accent text-xl font-bold">+</span>
+                                </button>
+                                <div id="faq-body-2" class="hidden px-6 pb-5 text-sm text-brand-gray leading-relaxed border-t border-gray-100 pt-3">
+                                    <strong class="text-brand-text">네, 찰떡같이 알아듣습니다!</strong><br>
+                                    최신 한국어 음성 인식 AI와 매장 메뉴·식자재 단어 학습이 적용되어 있어, 주방 소음이 있거나 사투리·빠른 말투로 편하게 말씀하셔도 정확히 인식해 기록합니다.
+                                </div>
+                            </div>
+
+                            <!-- FAQ 3 -->
+                            <div class="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-sm">
+                                <button onclick="toggleFaq(3)" class="w-full px-6 py-5 text-left flex items-center justify-between font-extrabold text-brand-text hover:text-brand-accent transition-colors">
+                                    <span>Q. 시범 기간 이후 결제는 어떻게 되나요?</span>
+                                    <span id="faq-icon-3" class="text-brand-accent text-xl font-bold">+</span>
+                                </button>
+                                <div id="faq-body-3" class="hidden px-6 pb-5 text-sm text-brand-gray leading-relaxed border-t border-gray-100 pt-3">
+                                    <strong class="text-brand-text">절대 자동으로 유료 결제되지 않습니다.</strong><br>
+                                    시범 기간 동안 모든 기능을 충분히 써보신 후, 정식 출시 시점에 계속 사용을 원하시는 사장님에 한해서만 부담 없는 합리적인 월 구독료로 직접 선택하실 수 있습니다.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 문의처 카드 -->
+                    <div class="bg-brand-cream rounded-3xl p-6 sm:p-7 border border-amber-900/10">
+                        <h4 class="text-lg font-extrabold text-brand-text mb-2">궁금한 점이 더 있으신가요?</h4>
+                        <p class="text-xs text-brand-gray mb-5">편하신 방법으로 문의해 주시면 친절히 안내해 드립니다.</p>
+                        
+                        <div class="space-y-3 text-sm">
+                            <a href="#contact" onclick="alert('카카오톡 1:1 상담 채널로 연결됩니다.')" class="w-full bg-[#FEE500] hover:bg-[#FDD800] text-[#191919] font-extrabold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all">
+                                <span>💬 카카오톡 1:1 상담하기</span>
+                            </a>
+                            <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+                                <a href="tel:010-0000-0000" class="flex-1 bg-white px-4 py-3 rounded-xl border border-gray-200 font-bold text-gray-700 hover:border-brand-accent text-center text-xs sm:text-sm">
+                                    📞 전화 문의: 010-0000-0000
+                                </a>
+                                <a href="mailto:help@storescretary.kr" class="flex-1 bg-white px-4 py-3 rounded-xl border border-gray-200 font-bold text-gray-700 hover:border-brand-accent text-center text-xs sm:text-sm">
+                                    ✉️ help@storesecretary.kr
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-gray-400 py-12 border-t border-zinc-800">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="text-center sm:text-left">
+                <div class="text-white font-extrabold text-lg flex items-center justify-center sm:justify-start gap-2 mb-2">
+                    <span>🗣️</span>
+                    <span>말하는 가게비서</span>
+                </div>
+                <p class="text-xs text-gray-500">
+                    내 사업의 모든 순간이 더 쉽게, 더 스마트하게, 더 성장하게.<br>
+                    © 2026 말하는 가게비서. All rights reserved.
+                </p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 text-xs font-semibold">
+                <a href="#brand-story" class="hover:text-white transition-colors">브랜드 스토리</a>
+                <a href="#features" class="hover:text-white transition-colors">핵심 기능</a>
+                <a href="#use-case" class="hover:text-white transition-colors">작동 영상</a>
+                <a href="#pricing" class="hover:text-white transition-colors">요금 안내</a>
+                <a href="#contact" class="text-brand-accent hover:underline">무료 체험 신청</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // 1. 모바일 햄버거 메뉴 토글
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+            });
+        });
+
+        // 2. 스마트폰 대화 시뮬레이션 시나리오 전환
+        const scenarios = [
+            {
+                owner: '"오늘 샌드버거밥 20개 팔았어."',
+                ai: '"네, <strong class=\'text-brand-accent\'>샌드버거밥 20개 판매 등록 완료</strong>했습니다. 오늘 목표 매출의 <strong class=\'text-emerald-600\'>80%를 달성</strong>하셨네요! 🎉<br><br>내일 장사를 위해 빵과 속재료 재고도 지금 바로 정리해 드릴까요?"',
+                chips: ['✅ 응, 재고 정리해 줘', '📊 오늘 총매출 보기']
+            },
+            {
+                owner: '"오늘 박 사장님 오셔서 주먹밥 3개 사가셨어. 매운 소스 따로 드렸어."',
+                ai: '"단골 <strong class=\'text-blue-600\'>박 사장님 고객 노트에 자동 메모</strong>했습니다! 💝<br><br>• 방문 횟수: 이번 달 6회째 방문<br>• 메모: 주먹밥 3개 포장 (매운 소스 별도 포장 선호)"',
+                chips: ['💝 박 사장님 방문이력 보기', '🎁 단골 서비스 알림 설정']
+            },
+            {
+                owner: '"오늘 치아바타 샌드버거 반응 좋네, 인스타 올릴 홍보 글 하나 써줘."',
+                ai: '"오늘 판매 데이터에 맞춰 <strong class=\'text-purple-600\'>SNS 홍보 문구</strong>를 준비했어요! 📣<br><br>\'갓 구운 치아바타에 속을 꽉 채운 샌드버거! 오늘 점심에도 많은 분들이 찾아주셨어요 🥪 남은 수량이 얼마 없으니 퇴근길에 서둘러 들러주세요!\'"',
+                chips: ['📋 문구 복사하기', '🔄 다른 느낌으로 다시 쓰기']
+            }
+        ];
+
+        function setDemoScenario(index) {
+            const ownerEl = document.getElementById('chat-owner');
+            const aiEl = document.getElementById('chat-ai');
+            const chipsEl = document.getElementById('chat-chips');
+
+            ownerEl.innerHTML = scenarios[index].owner;
+            aiEl.innerHTML = scenarios[index].ai;
+            chipsEl.innerHTML = scenarios[index].chips.map((chip, i) => 
+                `<span class="px-3 py-1 ${i === 0 ? 'bg-red-50 text-brand-accent border border-red-100 font-bold' : 'bg-gray-100 text-gray-600 font-semibold'} rounded-full text-xs">${chip}</span>`
+            ).join('');
+
+            document.querySelectorAll('.demo-tab').forEach((tab, idx) => {
+                if (idx === index) {
+                    tab.className = 'demo-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-brand-accent text-white shadow-sm transition-all';
+                } else {
+                    tab.className = 'demo-tab px-4 py-2 rounded-full text-xs sm:text-sm font-bold bg-white text-gray-600 border border-gray-200 hover:border-brand-accent transition-all';
+                }
+            });
+        }
+
+        // 3. FAQ 아코디언 토글
+        function toggleFaq(num) {
+            const body = document.getElementById(`faq-body-${num}`);
+            const icon = document.getElementById(`faq-icon-${num}`);
+            const isHidden = body.classList.contains('hidden');
+
+            if (isHidden) {
+                body.classList.remove('hidden');
+                icon.textContent = '−';
+            } else {
+                body.classList.add('hidden');
+                icon.textContent = '+';
+            }
+        }
+
+        // 4. 사전 신청 폼 제출 이벤트
+        const leadForm = document.getElementById('lead-form');
+        const formSuccess = document.getElementById('form-success');
+        const successDetail = document.getElementById('success-detail');
+
+        leadForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('owner-name').value.trim();
+            const phone = document.getElementById('owner-phone').value.trim();
+            const category = document.querySelector('input[name="category"]:checked').value;
+
+            successDetail.textContent = `${name} 사장님 (${category} · ${phone}), 신청 정보가 정상적으로 접수되었습니다.`;
+            formSuccess.classList.remove('hidden');
+            leadForm.reset();
+        });
+
+        // 5. 브랜드 스토리 10초 CF 영상 버전 전환
+        function switchBrandVideo(fileName, btnNum) {
+            const videoEl = document.getElementById('brand-story-video');
+            const srcEl = document.getElementById('brand-story-video-src');
+            const btn1 = document.getElementById('brand-vid-btn-1');
+            const btn2 = document.getElementById('brand-vid-btn-2');
+
+            srcEl.src = fileName;
+            videoEl.load();
+            videoEl.play();
+
+            if (btnNum === 1) {
+                btn1.className = 'px-2 py-0.5 rounded bg-brand-accent text-white transition-all';
+                btn2.className = 'px-2 py-0.5 rounded text-slate-300 hover:text-white transition-all';
+            } else {
+                btn2.className = 'px-2 py-0.5 rounded bg-brand-accent text-white transition-all';
+                btn1.className = 'px-2 py-0.5 rounded text-slate-300 hover:text-white transition-all';
+            }
+        }
+    </script>
+</body>
+</html>

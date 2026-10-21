@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 매출장부 - 말하는 가게비서 상세 소개</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            950: '#090E1A',
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        },
+                        beige: {
+                            50: '#FDFBF7',
+                            100: '#FAF6EE',
+                            200: '#F3ECE0',
+                            300: '#E5DCCB',
+                        },
+                        amberOrange: {
+                            400: '#FBBF24',
+                            500: '#FF8A00',
+                            600: '#EA580C',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes pulseWave {
+            0%, 100% { transform: scaleY(0.35); }
+            50% { transform: scaleY(1.2); }
+        }
+        .wave-bar {
+            animation: pulseWave 1s ease-in-out infinite;
+        }
+        @keyframes softGlow {
+            0%, 100% { box-shadow: 0 8px 25px rgba(255, 138, 0, 0.35); }
+            50% { box-shadow: 0 10px 32px rgba(255, 138, 0, 0.6); }
+        }
+        .btn-glow {
+            animation: softGlow 2.4s ease-in-out infinite;
+        }
+        /* 영수증 하단 톱니 느낌 장식 */
+        .receipt-edge {
+            background-image: radial-gradient(circle at 10px -4px, transparent 10px, #FFFFFF 11px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-beige-100 text-navy-900 font-sans antialiased selection:bg-amberOrange-500 selection:text-white">
+
+    <!-- 상단 네비게이션 바 (딥 네이비 베이스 + 오렌지 옐로우 포인트) -->
+    <header class="w-full bg-navy-900/95 backdrop-blur-md fixed top-0 z-50 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-white text-xl sm:text-2xl font-extrabold flex items-center gap-2.5 tracking-tight">
+                    <span class="w-9 h-9 rounded-xl bg-amberOrange-500/20 border border-amberOrange-400/40 flex items-center justify-center text-xl">🗣️</span>
+                    <span>말하는 <span class="text-amberOrange-400">가게비서</span></span>
+                </a>
+                <span class="hidden sm:inline-block text-white/20">|</span>
+                <span class="hidden sm:inline-block text-beige-100 text-sm font-bold bg-white/10 px-3.5 py-1 rounded-full">
+                    📒 오늘의 매출장부 상세 안내
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-beige-200 hover:text-white text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">
+                    ← 메인 홈페이지로
+                </a>
+                <a href="index.html#contact" class="bg-amberOrange-500 hover:bg-amberOrange-600 text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-lg shadow-amberOrange-500/25 transition-all">
+                    무료 체험 신청
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 상단 Hero 배너 -->
+    <section class="pt-32 pb-16 md:pt-40 md:pb-20 bg-navy-900 text-white relative overflow-hidden">
+        <!-- 배경 글로우 -->
+        <div class="absolute top-8 left-1/4 w-96 h-96 bg-amberOrange-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-amberOrange-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amberOrange-500/20 border border-amberOrange-400/30 text-amberOrange-400 font-extrabold text-xs sm:text-sm mb-6">
+                <span>📒 오늘의 매출장부</span>
+                <span>·</span>
+                <span>마감 정산 & 내일 발주 자동화</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] font-extrabold tracking-tight leading-[1.22] mb-6">
+                "장사 끝! 마감부터 내일 장사 준비까지<br>
+                <span class="text-amberOrange-400 underline decoration-amberOrange-500/60 decoration-4 underline-offset-8">말 한마디면 3분 만에</span> 끝납니다."
+            </h1>
+
+            <p class="text-beige-200/90 text-base sm:text-xl max-w-2xl mx-auto leading-relaxed">
+                퇴근 전 피곤한 몸으로 영수증을 더하고 냉장고를 뒤질 필요 없습니다.<br class="hidden sm:block">
+                앞치마를 풀며 툭 던진 한마디가 <strong class="text-white">정확한 마감 리포트와 내일 발주서</strong>로 즉시 바뀝니다.
+            </p>
+        </div>
+    </section>
+
+    <!-- 메인 섹션: 좌측 사장님 말풍선 vs 우측 AI 대시보드/체크리스트 위젯 -->
+    <main class="py-16 md:py-24 max-w-6xl mx-auto px-5 sm:px-6 space-y-16 md:space-y-24">
+
+        <!-- ============================================================
+             기능 1. 오늘 매출 분석 기능 (차트/그래프 느낌의 대시보드 UI)
+             ============================================================ -->
+        <section id="sales-analysis" class="scroll-mt-28">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="px-3.5 py-1.5 rounded-xl bg-navy-900 text-amberOrange-400 font-extrabold text-sm shadow">STEP 01</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900">오늘 매출 분석 기능</h2>
+                <span class="hidden sm:inline-block text-sm text-navy-700 font-medium">· 음성 한마디로 마감 정산 & 판매 인사이트 도출</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                
+                <!-- 좌측: 사장님 음성 (친근하고 일상적인 대화창 느낌) -->
+                <div class="lg:col-span-5 bg-beige-200/80 rounded-[32px] p-7 sm:p-9 border border-beige-300 flex flex-col justify-between shadow-md relative">
+                    <div>
+                        <!-- 대화창 상단 프로필 -->
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-beige-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-navy-900 text-amberOrange-400 flex items-center justify-center text-xl shadow">
+                                    👨‍🍳
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-navy-900">사장님 음성 한마디</p>
+                                    <p class="text-xs text-navy-700">오후 9:30 · 마감 정리 중</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-amberOrange-500/15 text-amberOrange-600 font-extrabold text-xs">
+                                🎙️ 일상 대화 입력
+                            </span>
+                        </div>
+
+                        <!-- 친근한 말풍선 UI -->
+                        <div class="relative bg-white rounded-3xl rounded-tl-md p-6 sm:p-7 shadow-lg border border-beige-300">
+                            <p class="text-navy-900 font-bold text-lg sm:text-xl leading-relaxed">
+                                "오늘 <span class="text-amberOrange-600 bg-amber-50 px-1.5 py-0.5 rounded">치아바타 샌드위치 30개</span> 팔았고, 점심때 <span class="text-amberOrange-600 bg-amber-50 px-1.5 py-0.5 rounded">감자수프 세트</span>가 많이 나갔어.<br><br>
+                                <span class="underline decoration-amberOrange-400 decoration-2 underline-offset-4">현금 5만 원에 카드 35만 원</span>이야."
+                            </p>
+
+                            <!-- 음성 파형 표시 -->
+                            <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                                <div class="flex items-center gap-1">
+                                    <span class="w-1 h-3 bg-amberOrange-500 rounded-full wave-bar"></span>
+                                    <span class="w-1 h-6 bg-amberOrange-500 rounded-full wave-bar" style="animation-delay:0.15s"></span>
+                                    <span class="w-1 h-4 bg-amberOrange-500 rounded-full wave-bar" style="animation-delay:0.3s"></span>
+                                    <span class="w-1 h-5 bg-amberOrange-500 rounded-full wave-bar" style="animation-delay:0.45s"></span>
+                                    <span class="w-1 h-3 bg-amberOrange-500 rounded-full wave-bar" style="animation-delay:0.2s"></span>
+                                    <span class="text-xs font-bold text-navy-700 ml-2">음성 인식 완료 (0:06)</span>
+                                </div>
+                                <span class="text-xs text-gray-400 font-semibold">자동 변환됨 →</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-white/70 rounded-2xl p-4 border border-beige-300 text-xs text-navy-800 font-semibold flex items-center gap-2.5">
+                        <span class="text-lg">💬</span>
+                        <span>계산기를 두드리거나 항목을 나눌 필요 없이, 기억나는 대로 편하게 말씀하세요.</span>
+                    </div>
+                </div>
+
+                <!-- 우측: AI 생성 결과 (전문적이고 신뢰감 있는 대시보드 리포트 위젯) -->
+                <div class="lg:col-span-7 bg-navy-900 text-white rounded-[32px] p-7 sm:p-9 shadow-2xl border border-navy-800 flex flex-col justify-between relative overflow-hidden">
+                    <!-- 우측 상단 장식 -->
+                    <div class="absolute -top-12 -right-12 w-48 h-48 bg-amberOrange-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div>
+                        <!-- 위젯 헤더 -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b border-white/10">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3 h-3 rounded-full bg-amberOrange-400 animate-pulse"></span>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-amberOrange-400">AI Smart Closing Report</span>
+                            </div>
+                            <span class="text-xs text-beige-200/70 font-mono bg-white/5 px-3 py-1 rounded-lg border border-white/10">
+                                정산 소요시간: 0.8초
+                            </span>
+                        </div>
+
+                        <!-- [오늘의 마감 리포트] 메인 숫자 & 차트 영역 -->
+                        <div class="bg-navy-800/90 rounded-2xl p-6 border border-white/10 mb-5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                                <div>
+                                    <span class="inline-block text-xs font-extrabold text-amberOrange-400 mb-1">[오늘의 마감 리포트]</span>
+                                    <h3 class="text-2xl sm:text-3xl font-extrabold text-white">
+                                        오늘 총매출은 <span class="text-amberOrange-400">40만 원</span>입니다. 🎉
+                                    </h3>
+                                </div>
+                                <span class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 font-extrabold text-xs sm:text-sm shrink-0 w-fit">
+                                    ▲ 어제보다 15% 상승
+                                </span>
+                            </div>
+
+                            <!-- 결제 수단 비율 바 & 미니 막대그래프 -->
+                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 pt-4 border-t border-white/10 items-center">
+                                <!-- 카드 vs 현금 정산 내역 -->
+                                <div class="sm:col-span-7 space-y-3">
+                                    <div class="flex justify-between text-xs font-bold">
+                                        <span class="text-beige-100">💳 카드 매출 (87.5%)</span>
+                                        <span class="text-white font-extrabold">350,000원</span>
+                                    </div>
+                                    <div class="w-full h-2.5 bg-navy-950 rounded-full overflow-hidden flex">
+                                        <div class="bg-amberOrange-500 h-full" style="width: 87.5%"></div>
+                                        <div class="bg-amberOrange-400/50 h-full" style="width: 12.5%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs font-bold">
+                                        <span class="text-beige-200/80">💵 현금 매출 (12.5%)</span>
+                                        <span class="text-beige-100 font-extrabold">50,000원</span>
+                                    </div>
+                                    <div class="pt-1 flex gap-2">
+                                        <span class="text-[11px] bg-white/10 text-beige-100 px-2.5 py-1 rounded-md font-semibold">🥪 치아바타 샌드위치 30개</span>
+                                        <span class="text-[11px] bg-amberOrange-500/20 text-amberOrange-400 px-2.5 py-1 rounded-md font-bold">🍲 점심 감자수프 세트 집중</span>
+                                    </div>
+                                </div>
+
+                                <!-- 시간대별/전일대비 미니 차트 그래픽 -->
+                                <div class="sm:col-span-5 bg-navy-900/90 rounded-xl p-4 border border-white/5">
+                                    <div class="flex items-center justify-between text-[11px] text-beige-200/70 mb-2">
+                                        <span>시간대별 주문 비중</span>
+                                        <span class="text-amberOrange-400 font-bold">12~13시 피크</span>
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-2 items-end h-20 pt-2 px-1">
+                                        <div class="flex flex-col items-center gap-1">
+                                            <div class="w-full bg-slate-700 rounded-t h-6"></div>
+                                            <span class="text-[10px] text-slate-400">오전</span>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-1">
+                                            <div class="w-full bg-amberOrange-500 rounded-t h-14 relative">
+                                                <span class="absolute -top-4 left-1/2 -translate-x-1/2 text-[9px] font-extrabold text-amberOrange-400">60%</span>
+                                            </div>
+                                            <span class="text-[10px] font-bold text-amberOrange-400">점심</span>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-1">
+                                            <div class="w-full bg-slate-600 rounded-t h-8"></div>
+                                            <span class="text-[10px] text-slate-400">오후</span>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-1">
+                                            <div class="w-full bg-slate-500 rounded-t h-10"></div>
+                                            <span class="text-[10px] text-slate-400">저녁</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- [AI 판매 인사이트] 박스 -->
+                        <div class="bg-gradient-to-r from-amberOrange-500/20 to-amberOrange-400/10 rounded-2xl p-5 border border-amberOrange-400/40">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2.5 py-0.5 rounded-md bg-amberOrange-500 text-white text-xs font-extrabold">[AI 판매 인사이트]</span>
+                                <span class="text-xs text-amberOrange-400 font-bold">내일 매출 상승 팁 💡</span>
+                            </div>
+                            <p class="text-sm sm:text-base text-beige-50 font-semibold leading-relaxed">
+                                "오늘 <strong class="text-amberOrange-400">점심시간(12시~1시)에 세트 주문이 전체의 60%</strong>를 차지했습니다. 내일 매장 앞 입간판에 <strong class="underline decoration-amberOrange-400 underline-offset-4">세트 메뉴를 강조</strong>해 보는 건 어떨까요?"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================================
+             기능 2. 내일 발주 리스트 자동 작성 기능 (체크리스트 & 문자 전송 UI)
+             ============================================================ -->
+        <section id="order-checklist" class="scroll-mt-28">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="px-3.5 py-1.5 rounded-xl bg-navy-900 text-amberOrange-400 font-extrabold text-sm shadow">STEP 02</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-900">내일 발주 리스트 자동 작성 기능</h2>
+                <span class="hidden sm:inline-block text-sm text-navy-700 font-medium">· 남은 재고만 말하면 내일 필요한 발주 수량 계산부터 문자 발송까지</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                
+                <!-- 좌측: 사장님 음성 (친근한 대화창) -->
+                <div class="lg:col-span-5 bg-beige-200/80 rounded-[32px] p-7 sm:p-9 border border-beige-300 flex flex-col justify-between shadow-md">
+                    <div>
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-beige-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-11 h-11 rounded-2xl bg-navy-900 text-amberOrange-400 flex items-center justify-center text-xl shadow">
+                                    👨‍🍳
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-navy-900">사장님 음성 한마디</p>
+                                    <p class="text-xs text-navy-700">오후 9:32 · 냉장고 확인 중</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-amberOrange-500/15 text-amberOrange-600 font-extrabold text-xs">
+                                🎙️ 재고 구두 체크
+                            </span>
+                        </div>
+
+                        <!-- 말풍선 UI -->
+                        <div class="bg-white rounded-3xl rounded-tl-md p-6 sm:p-7 shadow-lg border border-beige-300">
+                            <p class="text-navy-900 font-bold text-lg sm:text-xl leading-relaxed">
+                                "샌드위치가 예상보다 많이 나가서 <span class="text-amberOrange-600 bg-amber-50 px-1.5 py-0.5 rounded">치아바타 빵 5개 남았고</span>, <span class="text-amberOrange-600 bg-amber-50 px-1.5 py-0.5 rounded">양상추는 다 썼어.</span><br><br>
+                                내일 필요한 재료 좀 쫙 정리해 줘."
+                            </p>
+
+                            <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                                <div class="flex items-center gap-1">
+                                    <span class="w-1 h-4 bg-amberOrange-500 rounded-full wave-bar"></span>
+                                    <span class="w-1 h-6 bg-amberOrange-500 rounded-full wave-bar" style="animation-delay:0.2s"></span>
+                                    <span class="w-1 h-3 bg-amberOrange-500 rounded-full wave-bar" style="animation-delay:0.1s"></span>
+                                    <span class="w-1 h-5 bg-amberOrange-500 rounded-full wave-bar" style="animation-delay:0.35s"></span>
+                                    <span class="text-xs font-bold text-navy-700 ml-2">판매량 + 잔여재고 연동 분석</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 bg-white/70 rounded-2xl p-4 border border-beige-300 text-xs text-navy-800 font-semibold flex items-center gap-2.5">
+                        <span class="text-lg">📦</span>
+                        <span>오늘 많이 팔린 '감자수프 세트' 데이터까지 반영해 감자 발주량도 함께 챙겨줍니다.</span>
+                    </div>
+                </div>
+
+                <!-- 우측: AI 생성 결과 (영수증/발주서 위젯 느낌의 체크리스트 카드) -->
+                <div class="lg:col-span-7 bg-white rounded-[32px] p-7 sm:p-9 shadow-2xl border-2 border-navy-900/10 flex flex-col justify-between relative">
+                    <div>
+                        <!-- 발주서 상단 헤더 -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b-2 border-dashed border-gray-200">
+                            <div>
+                                <span class="inline-block px-3 py-1 rounded-md bg-navy-900 text-amberOrange-400 font-extrabold text-xs mb-1.5">
+                                    [내일 발주 리스트]
+                                </span>
+                                <h3 class="text-xl sm:text-2xl font-extrabold text-navy-900">
+                                    "판매량과 재고를 바탕으로 발주 리스트를 준비했습니다."
+                                </h3>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-xs border border-emerald-200">
+                                품목 3건 자동 산출
+                            </span>
+                        </div>
+
+                        <!-- [체크 박스 리스트] -->
+                        <div class="space-y-3 mb-7">
+                            <!-- 항목 1 -->
+                            <label class="flex items-center justify-between p-4 rounded-2xl bg-beige-50 border border-beige-300 hover:border-amberOrange-500 cursor-pointer transition-all">
+                                <div class="flex items-center gap-3.5">
+                                    <input type="checkbox" checked class="w-5 h-5 accent-[#FF8A00] rounded cursor-pointer">
+                                    <div>
+                                        <span class="text-base sm:text-lg font-extrabold text-navy-900">✓ 치아바타 빵 25개</span>
+                                        <p class="text-xs text-gray-500">현재 잔여 5개 · 일일 권장 재고 30개 기준</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 rounded-lg bg-amberOrange-500/15 text-amberOrange-600 font-extrabold text-xs">
+                                    필수 발주
+                                </span>
+                            </label>
+
+                            <!-- 항목 2 -->
+                            <label class="flex items-center justify-between p-4 rounded-2xl bg-beige-50 border border-beige-300 hover:border-amberOrange-500 cursor-pointer transition-all">
+                                <div class="flex items-center gap-3.5">
+                                    <input type="checkbox" checked class="w-5 h-5 accent-[#FF8A00] rounded cursor-pointer">
+                                    <div>
+                                        <span class="text-base sm:text-lg font-extrabold text-navy-900">✓ 신선 양상추 2박스</span>
+                                        <p class="text-xs text-gray-500">현재 잔여 0개 (전량 소진)</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 rounded-lg bg-red-100 text-red-600 font-extrabold text-xs">
+                                    재고 소진
+                                </span>
+                            </label>
+
+                            <!-- 항목 3 -->
+                            <label class="flex items-center justify-between p-4 rounded-2xl bg-beige-50 border border-beige-300 hover:border-amberOrange-500 cursor-pointer transition-all">
+                                <div class="flex items-center gap-3.5">
+                                    <input type="checkbox" checked class="w-5 h-5 accent-[#FF8A00] rounded cursor-pointer">
+                                    <div>
+                                        <span class="text-base sm:text-lg font-extrabold text-navy-900">✓ 수프용 감자 1박스</span>
+                                        <p class="text-xs text-gray-500">오늘 점심 감자수프 세트 판매 급증 반영</p>
+                                    </div>
+                                </div>
+                                <span class="px-3 py-1 rounded-lg bg-blue-50 text-blue-600 font-extrabold text-xs">
+                                    AI 추천 추가
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- [포인트 버튼] 거래처 사장님께 발주 문자 바로 보내기 -->
+                    <div>
+                        <button 
+                            onclick="sendOrderSms()" 
+                            class="w-full bg-amberOrange-500 hover:bg-amberOrange-600 text-white text-base sm:text-lg font-extrabold py-4 px-6 rounded-2xl btn-glow hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5"
+                        >
+                            <span>📨 거래처 사장님께 발주 문자 바로 보내기</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+
+                        <!-- 발주 문자 발송 미리보기 알림 (버튼 클릭 시 노출) -->
+                        <div id="sms-toast" class="hidden mt-4 bg-navy-900 text-white rounded-2xl p-4 text-xs sm:text-sm border border-amberOrange-400/50">
+                            <p class="font-extrabold text-amberOrange-400 mb-1">✅ 거래처 발주 문자 초안이 준비되었습니다!</p>
+                            <p class="text-beige-100">"안녕하세요 사장님! 내일 오전 배송으로 [치아바타 빵 25개 / 신선 양상추 2박스 / 수프용 감자 1박스] 발주 부탁드립니다. 감사합니다!"</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 하단 행동 유도 (CTA) -->
+    <section class="py-16 bg-navy-900 text-white text-center px-6">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-2xl sm:text-4xl font-extrabold mb-4">
+                퇴근 전 3분, 말 한마디로 장사 준비를 끝내보세요
+            </h2>
+            <p class="text-beige-200/80 text-sm sm:text-base mb-8">
+                지금 시범 운영 기간에는 모든 매출장부·재고발주 기능을 100% 무료로 사용하실 수 있습니다.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="index.html#contact" class="bg-amberOrange-500 hover:bg-amberOrange-600 text-white font-extrabold px-8 py-4 rounded-2xl shadow-lg transition-all">
+                    1분 만에 무료 체험 신청하기 →
+                </a>
+                <a href="index.html" class="bg-white/10 hover:bg-white/15 text-white font-bold px-8 py-4 rounded-2xl border border-white/15 transition-all">
+                    메인 페이지로 돌아가기
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function sendOrderSms() {
+            const toast = document.getElementById('sms-toast');
+            toast.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
