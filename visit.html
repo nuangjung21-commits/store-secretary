@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>견적 및 방문·출강 상담 문의</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#FDFBF7',
+                            cream: '#F7F3EB',
+                            dark: '#18181B',
+                            text: '#1A202C',
+                            accent: '#FF6B6B',
+                            accentHover: '#FA5252',
+                            accentLight: '#FFF0F0',
+                            warm: '#FF9F43',
+                            gray: '#4A5568'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            word-break: keep-all;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-text font-sans antialiased min-h-screen flex flex-col selection:bg-brand-accent selection:text-white">
+
+    <!-- 상단 헤더 -->
+    <header class="w-full bg-brand-bg/90 backdrop-blur-md sticky top-0 z-50 border-b border-amber-900/10">
+        <div class="max-w-4xl mx-auto px-5 sm:px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-lg sm:text-xl font-extrabold flex items-center gap-2 tracking-tight group">
+                <span class="w-9 h-9 rounded-xl bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center text-xl group-hover:scale-105 transition-transform">✉️</span>
+                <span>맞춤 견적 · <span class="text-brand-accent">상담 문의</span></span>
+            </a>
+            <a href="index.html" class="text-sm font-semibold text-brand-gray hover:text-brand-accent transition-colors">
+                ← 홈으로 돌아가기
+            </a>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main class="flex-1 py-12 sm:py-16 px-5 sm:px-6">
+        <div class="max-w-2xl mx-auto">
+            <!-- 타이틀 영역 -->
+            <div class="text-center mb-10">
+                <span class="inline-block px-3.5 py-1.5 rounded-full bg-brand-accentLight text-brand-accent text-xs sm:text-sm font-bold mb-3 border border-brand-accent/20">
+                    단체 출강 · 공방 방문 체험 · 답례품 제작
+                </span>
+                <h1 class="text-2xl sm:text-4xl font-extrabold text-brand-dark tracking-tight mb-3">
+                    맞춤 견적 및 상담 문의
+                </h1>
+                <p class="text-brand-gray text-sm sm:text-base leading-relaxed">
+                    문의 내용을 남겨주시면 검토 후 <strong class="text-brand-dark">이틀 안에 맞춤 제안서</strong>를 이메일로 보내드립니다.
+                </p>
+            </div>
+
+            <!-- 폼 카드 -->
+            <div class="bg-white rounded-3xl shadow-xl shadow-amber-900/5 border border-amber-900/10 p-6 sm:p-10">
+                <form id="inquiryForm" class="space-y-6">
+                    <!-- 1. 기관명/상호 & 담당자명 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="institution" class="block text-sm font-bold text-gray-800 mb-2">
+                                기관명 / 상호 <span class="text-brand-accent">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="institution"
+                                name="institution"
+                                required
+                                placeholder="예: ○○초등학교 / (주)행복기업"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="name" class="block text-sm font-bold text-gray-800 mb-2">
+                                담당자명 <span class="text-brand-accent">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                required
+                                placeholder="담당자 성함을 입력해 주세요"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- 2. 연락처 & 이메일 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="phone" class="block text-sm font-bold text-gray-800 mb-2">
+                                연락처 <span class="text-brand-accent">*</span>
+                            </label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                required
+                                placeholder="예: 010-1234-5678"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-bold text-gray-800 mb-2">
+                                이메일 <span class="text-brand-accent">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                placeholder="제안서를 받으실 이메일 주소"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- 3. 문의 유형 & 인원/수량 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="category" class="block text-sm font-bold text-gray-800 mb-2">
+                                문의 유형 <span class="text-brand-accent">*</span>
+                            </label>
+                            <select
+                                id="category"
+                                name="category"
+                                required
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm bg-white"
+                            >
+                                <option value="" disabled selected>문의 유형을 선택해 주세요</option>
+                                <option value="단체 출강">단체 출강</option>
+                                <option value="공방 방문 체험">공방 방문 체험</option>
+                                <option value="답례품 제작">답례품 제작</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="count" class="block text-sm font-bold text-gray-800 mb-2">
+                                인원 / 수량 <span class="text-brand-accent">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="count"
+                                name="count"
+                                required
+                                placeholder="예: 25명 / 50세트"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- 4. 희망 날짜 & 예산 (선택) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="date" class="block text-sm font-bold text-gray-800 mb-2">
+                                희망 날짜 <span class="text-xs font-normal text-gray-400">(선택)</span>
+                            </label>
+                            <input
+                                type="date"
+                                id="date"
+                                name="date"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="budget" class="block text-sm font-bold text-gray-800 mb-2">
+                                예산 <span class="text-xs font-normal text-gray-400">(선택)</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="budget"
+                                name="budget"
+                                placeholder="예: 1인 30,000원 / 총 100만 원"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- 5. 문의 내용 (선택) -->
+                    <div>
+                        <label for="message" class="block text-sm font-bold text-gray-800 mb-2">
+                            문의 내용 <span class="text-xs font-normal text-gray-400">(선택)</span>
+                        </label>
+                        <textarea
+                            id="message"
+                            name="message"
+                            rows="4"
+                            placeholder="희망하시는 프로그램, 시간대, 요청사항 등을 자유롭게 남겨주세요."
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-brand-accent focus:ring-2 focus:ring-brand-accent/20 outline-none transition-all text-sm resize-y"
+                        ></textarea>
+                    </div>
+
+                    <!-- 완료 안내 배너 (평소 숨김) -->
+                    <div id="statusBanner" class="hidden rounded-2xl p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold text-center">
+                        접수가 완료되었습니다. 접수 안내와 함께 이틀 안에 맞춤 제안서를 보내 드리겠습니다.
+                    </div>
+
+                    <!-- 제출 버튼 -->
+                    <button
+                        type="submit"
+                        id="submitBtn"
+                        class="w-full py-4 px-6 rounded-2xl bg-brand-accent hover:bg-brand-accentHover text-white font-extrabold text-base shadow-lg shadow-brand-accent/25 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                        견적 및 상담 문의 접수하기
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Google Apps Script 연동 스크립트 -->
+    <script>
+        /**
+         * Google Apps Script 웹 앱 배포 후 발급받은 URL(https://script.google.com/macros/s/.../exec)을
+         * 아래 SCRIPT_URL 변수에 넣어주세요.
+         */
+        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+
+        const inquiryForm = document.getElementById('inquiryForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusBanner = document.getElementById('statusBanner');
+
+        inquiryForm.addEventListener('submit', async function (e) {
+            e.preventDefault(); // 기본 새로고침 방지
+
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '접수 중...';
+            statusBanner.classList.add('hidden');
+
+            try {
+                const formData = new FormData(inquiryForm);
+
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    const successMsg = '접수가 완료되었습니다. 접수 안내와 함께 이틀 안에 맞춤 제안서를 보내 드리겠습니다.';
+                    statusBanner.textContent = successMsg;
+                    statusBanner.classList.remove('hidden');
+                    alert(successMsg);
+                    inquiryForm.reset();
+                } else {
+                    throw new Error(result.message || '접수 처리 중 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error('전송 오류:', error);
+                alert('문의 접수 중 오류가 발생했습니다. 웹 앱 URL 설정 또는 네트워크 상태를 확인해 주세요.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+    </script>
+</body>
+</html>
