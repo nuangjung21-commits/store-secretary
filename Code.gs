@@ -16,6 +16,13 @@
 
 const ADMIN_EMAIL = 'dwn21@naver.com'; // 관리자 수신 이메일
 
+// 브라우저에서 웹 앱 URL로 직접 접속(GET)했을 때 정상 배포 여부를 확인하는 함수
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: 'ok', message: '웹 앱이 정상적으로 배포되어 작동 중입니다.' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doPost(e) {
   const lock = LockService.getScriptLock();
   lock.tryLock(10000); // 동시 입력 시 행 충돌 방지
@@ -41,9 +48,9 @@ function doPost(e) {
 
     // 2. HTML FormData(e.parameter) 또는 JSON(e.postData.contents) 데이터 파싱
     let params = {};
-    if (e.parameter && Object.keys(e.parameter).length > 0) {
+    if (e && e.parameter && Object.keys(e.parameter).length > 0) {
       params = e.parameter;
-    } else if (e.postData && e.postData.contents) {
+    } else if (e && e.postData && e.postData.contents) {
       try {
         params = JSON.parse(e.postData.contents);
       } catch (err) {
